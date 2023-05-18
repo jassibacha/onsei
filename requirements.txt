@@ -1,0 +1,16 @@
+bcrypt
+decorator
+Faker
+Flask
+Flask-Bcrypt
+Flask-DebugToolbar
+Flask-SQLAlchemy
+Flask-WTF
+itsdangerous
+Jinja2
+MarkupSafe
+psycopg2-binary
+python-dotenv
+SQLAlchemy
+Werkzeug
+WTForms
