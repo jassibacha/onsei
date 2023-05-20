@@ -1,0 +1,42 @@
+<header class="p-3 text-bg-dark">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-center py-1">
+            <a
+                href="/"
+                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none"
+            >
+                <span class="fs-4 text-white">Onsei.moe</span>
+            </a>
+
+            {#
+            <ul class="nav nav-pills">
+                <li>
+                    <a href="#" class="nav-link px-2 text-secondary">Home</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link px-2 text-white">Features</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link px-2 text-white">Pricing</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link px-2 text-white">FAQs</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link px-2 text-white">About</a>
+                </li>
+            </ul>
+            #}
+            <div class="text-end">
+                {% if session['username'] %}
+                <a href="/logout" class="btn btn-outline-light me-2">
+                    Logout
+                </a>
+                {% else %}
+                <a href="/login" class="btn btn-outline-light me-2"> Login </a>
+                <a href="/register" class="btn btn-warning"> Register </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>

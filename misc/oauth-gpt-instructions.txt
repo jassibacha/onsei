@@ -1,0 +1,30 @@
+To perform OAuth authentication with AniList's API in your Python Flask app, you can use the requests library along with the OAuth dance. Here's a basic step-by-step guide to get you started:
+
+Register your application with AniList:
+
+Go to the AniList website and create an account if you haven't already.
+Visit the AniList Developer settings page (https://anilist.co/settings/developer) and create a new application.
+Obtain your Client ID and Client Secret, which will be used for authentication.
+Install the required libraries:
+
+Make sure you have the requests library installed. If not, you can install it using pip:
+Copy code
+pip install requests
+Additionally, you may need to install other libraries depending on your specific requirements (e.g., oauthlib, requests_oauthlib).
+Set up the necessary routes and views in your Flask app:
+
+Create a route for the OAuth authorization flow, where users will be redirected to the AniList authorization page.
+Create a route to handle the callback URL after the user grants authorization.
+Implement the OAuth flow:
+
+When the user accesses the authorization route, redirect them to the AniList authorization URL. Include the necessary parameters, such as your Client ID, requested scopes, and callback URL.
+After the user grants authorization, AniList will redirect them back to your callback URL with an authorization code.
+In the callback route, exchange the authorization code for an access token by making a POST request to the AniList token endpoint. Include your Client ID, Client Secret, authorization code, and callback URL in the request parameters.
+If the token request is successful, you will receive an access token in the response. You can use this access token to make authenticated requests to the AniList API on behalf of the user.
+Use the access token to make authenticated requests:
+
+Store the access token securely, associating it with the authenticated user.
+Include the access token in the headers or request parameters when making API calls to AniList's endpoints. This will authenticate the requests and grant you access to the user's data.
+Keep in mind that the specifics of the OAuth flow and API endpoints may vary based on the version of the AniList API you're using. Make sure to refer to AniList's API documentation for the most up-to-date information and examples.
+
+Note: Implementing OAuth authentication can be complex and involves various security considerations. It's recommended to thoroughly understand the OAuth flow and follow best practices to ensure the security of your application and user data.

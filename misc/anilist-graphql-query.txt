@@ -1,0 +1,52 @@
+{
+  Page {
+    staff(search: "Kazuya Nakai") {
+      id
+      name {
+        first
+        last
+      }
+      image {
+        large
+        medium
+      }
+      characters {
+        nodes {
+          name {
+            # first
+            # middle
+            # last
+            full
+            # native
+            # userPreferred
+          }
+          image {
+            # large
+            medium
+          }
+          media {
+            nodes {
+              id
+            	title {
+            	  romaji
+            	  english
+            	  #native
+            	  userPreferred
+            	}
+             	coverImage {
+             	  # extraLarge
+             	  # large
+             	  medium
+             	  color
+             	} 
+              meanScore
+              popularity
+              trending
+              favourites
+            }
+          }
+        }
+      }
+    }
+  }
+}
