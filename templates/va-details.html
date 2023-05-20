@@ -1,0 +1,33 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>{{ va.name.full }}</h2>
+            <img
+                src="{{ va.image.large }}"
+                alt="{{ va.name.full }}"
+                class="img-fluid"
+            />
+            <h3>Characters:</h3>
+            {% for character in va.characters.nodes %}
+            <div class="card">
+                <div class="card-body">
+                    <h4>{{ character.name.full }}</h4>
+                    <img
+                        src="{{ character.image.medium }}"
+                        alt="{{ character.name.full }}"
+                        class="img-fluid"
+                    />
+                    {% for media in character.media.nodes %}
+                    <h5>{{ media.title.romaji }}</h5>
+                    <p>Mean Score: {{ media.meanScore }}</p>
+                    <p>Popularity: {{ media.popularity }}</p>
+                    <!-- Display other media details as needed -->
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

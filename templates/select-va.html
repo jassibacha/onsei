@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Select Voice Actor</h2>
+            <form action="/select-va" method="POST">
+                <div class="form-group">
+                    <label for="va-search">Search:</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="va-search"
+                        name="va-search"
+                        placeholder="Enter a voice actor's name"
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+    {% if va %}
+    <div class="row mt-4">
+        <div class="col">
+            <h3>Search Results:</h3>
+            {% for voice_actor in va %}
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img
+                            src="{{ voice_actor.image.medium }}"
+                            alt="{{ voice_actor.name.full }}"
+                            class="img-fluid"
+                        />
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ voice_actor.name.full }}
+                            </h5>
+                            <form action="/va-details" method="POST">
+                                <input
+                                    type="hidden"
+                                    name="va-id"
+                                    value="{{ voice_actor.id }}"
+                                />
+                                <button type="submit" class="btn btn-primary">
+                                    View Details
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
