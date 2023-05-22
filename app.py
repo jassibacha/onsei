@@ -157,7 +157,13 @@ def search():
 
 @app.route('/va/search', methods=['GET', 'POST'])
 def va_search():
+    
     query = request.form.get('va-search')
+    print('QUERY:', query)
+
+    if not query:
+        # Display the search page without making a GraphQL query
+        return render_template('va-search.html')
 
     # Perform the GraphQL query with the search query
     graphql_query = '''
@@ -225,37 +231,101 @@ def va_search():
 
     # Process the response
     if response.status_code == 200:
+        print ('*** 200 CODE, RESPONSE IS GOOD ***')
         data = json.loads(response.text)
-        # Add the data to session so we can pull it in va-select if necessary
-        # session['search_data'] = data
-
-        # print('SESSION SEARCH DATA', session['search_data'])
-
-        # Extract the search results from the response
-        # staff_list = data['data']['Page']['staff']
-        # staff_count = len(staff_list)
-        ###
-        ### SHOULD I JUST DO A BASIC PARSE, SEE IF THERES MORE THAN 1, THEN DO A DETAILED PARSE FROM THERE?
-        ###
-        # if staff_count > 1:
-        #     print('More than one VA found, go to select_va')
-        #     return redirect(url_for('select_va', query=query))
-        # elif staff_count == 1:
-        #     print('Single staff found, go to va details page, VA: ')
-        #     va = staff_list[0]
-        #     print(va)
-        #     va_id = staff_list[0]['id']
-        #     return render_template('va-details.html', va=va)
-        #     # return redirect(url_for('va_details', va=va))
-        # else:
-        #     results = []
-        #     return render_template('no-results.html', query=query)
+        va = data['data']['Page']['staff']
+        return render_template('va-search.html', va=va, query=query)
     else:
         print('Request failed with status code:', response.status_code)
         print('Response:', response.text)
-        results = []
 
-    return render_template('results-temp.html', query=query, results=results)
+    return render_template('va-search.html')
+
+
+@app.route('/va/<int:va_id>', methods=['GET', 'POST'])
+def va_details(va_id):
+    """Grab the VA details by AniList ID"""
+
+    # Perform the GraphQL query with the search query
+    graphql_query = '''
+    query ($page: Int, $perPage: Int, $id: Int) {
+        Page(page: $page, perPage: $perPage) {
+            pageInfo {
+                total
+                currentPage
+                lastPage
+                hasNextPage
+                perPage
+            }
+            staff(id: $id) {
+                id
+                name {
+                    first
+                    last
+                    full
+                }
+                image {
+                    large
+                    medium
+                }
+                characters {
+                    nodes {
+                        name {
+                            full
+                        }
+                        image {
+                            large
+                        }
+                        media {
+                            nodes {
+                            id
+                                title {
+                                    romaji
+                                    english
+                                    userPreferred
+                                }
+                                coverImage {
+                                    medium
+                                    color
+                                } 
+                                meanScore
+                                popularity
+                                trending
+                                favourites
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    '''
+
+    variables = {
+        'id': va_id,
+        #'search': query,
+        'page': 1,
+        #'perPage': 10
+    }
+
+    # Send the GraphQL query to the AniList API
+    response = requests.post(anilist_api_url, json={'query': graphql_query, 'variables': variables}, headers=anilist_api_headers)
+
+
+    # Process the response
+    if response.status_code == 200:
+        print('*** VA DETAILS - 200 CODE, RESPONSE IS GOOD ***')
+        data = json.loads(response.text)
+        #print(data)
+        # We need to grab the first list item in the results, even though there's only one result because we're pulling from ID!
+        va = data['data']['Page']['staff'][0]
+        print('VA ID: ', va_id, 'VA RETURN: ', va)
+        return render_template('va-details.html', va=va)
+    else:
+        print('Request failed with status code:', response.status_code)
+        print('Response:', response.text)
+
+    return render_template('va-details.html', va_id=va_id)
 
 
 @app.route('/select-va', methods=['GET', 'POST'])

@@ -14,15 +14,22 @@
                 <div class="card-body">
                     <h4>{{ character.name.full }}</h4>
                     <img
-                        src="{{ character.image.medium }}"
+                        src="{{ character.image.large }}"
                         alt="{{ character.name.full }}"
                         class="img-fluid"
                     />
                     {% for media in character.media.nodes %}
                     <h5>{{ media.title.romaji }}</h5>
+                    <img
+                        src="{{ media.coverImage.medium }}"
+                        alt="{{ media.title.romaji }}"
+                        class="img-fluid"
+                    />
                     <p>Mean Score: {{ media.meanScore }}</p>
                     <p>Popularity: {{ media.popularity }}</p>
                     <!-- Display other media details as needed -->
+                    AL Link:
+                    <a href="https://anilist.co/anime/{{media.id}}">Link</a>
                     {% endfor %}
                 </div>
             </div>
