@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, session
 import requests
 import json
 from flask_debugtoolbar import DebugToolbarExtension
@@ -50,7 +50,7 @@ def search_form():
     return render_template('search-temp.html')
 
 
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['GET', 'POST'])
 def search():
     query = request.form.get('va-search')
 
@@ -121,11 +121,18 @@ def search():
     # Process the response
     if response.status_code == 200:
         data = json.loads(response.text)
+        # Add the data to session so we can pull it in va-select if necessary
+        # session['search_data'] = data
+
+        # Add the search query to session quickly
+        session['va_query'] = query
 
         # Extract the search results from the response
         staff_list = data['data']['Page']['staff']
         staff_count = len(staff_list)
-
+        ###
+        ### SHOULD I JUST DO A BASIC PARSE, SEE IF THERES MORE THAN 1, THEN DO A DETAILED PARSE FROM THERE?
+        ###
         if staff_count > 1:
             print('More than one VA found, go to select_va')
             return redirect(url_for('select_va', query=query))
@@ -147,17 +154,10 @@ def search():
     return render_template('results-temp.html', query=query, results=results)
 
 
-@app.route('/select-va', methods=['GET', 'POST'])
-def select_va():
-    va_id = request.form.get('va-id')
+
+@app.route('/va/search', methods=['GET', 'POST'])
+def va_search():
     query = request.form.get('va-search')
-
-
-    #########
-    ## DO WE NEED TO SPLIT THIS ROUTE? OR AT LEAST AN IF STATEMENT BETWEEN GET AND POST
-    ## GET SHOULD BE GRABBING THE EXISTING JSON DATA FROM QUERY
-    ## POST SHOULD BE SUBMITTING THE VA ID TO VA_DETAILS
-    #########
 
     # Perform the GraphQL query with the search query
     graphql_query = '''
@@ -215,10 +215,9 @@ def select_va():
     '''
 
     variables = {
-        'id': va_id,
         'search': query,
         'page': 1,
-        'perPage': 5
+        #'perPage': 1
     }
 
     # Send the GraphQL query to the AniList API
@@ -227,19 +226,186 @@ def select_va():
     # Process the response
     if response.status_code == 200:
         data = json.loads(response.text)
-        print('*****DATA*****')
-        print(data)
-        print('*****DATA PAGE STAFF*****')
-        print(data['data']['Page']['staff'])
-        # print('*****DATA STAFF*****')
-        # print(data['staff'])
-        va = data['data']['Page']['staff']
-        # va = data['data']['staff']
-        return render_template('va-details.html', va=va)
+        # Add the data to session so we can pull it in va-select if necessary
+        # session['search_data'] = data
+
+        # print('SESSION SEARCH DATA', session['search_data'])
+
+        # Extract the search results from the response
+        # staff_list = data['data']['Page']['staff']
+        # staff_count = len(staff_list)
+        ###
+        ### SHOULD I JUST DO A BASIC PARSE, SEE IF THERES MORE THAN 1, THEN DO A DETAILED PARSE FROM THERE?
+        ###
+        # if staff_count > 1:
+        #     print('More than one VA found, go to select_va')
+        #     return redirect(url_for('select_va', query=query))
+        # elif staff_count == 1:
+        #     print('Single staff found, go to va details page, VA: ')
+        #     va = staff_list[0]
+        #     print(va)
+        #     va_id = staff_list[0]['id']
+        #     return render_template('va-details.html', va=va)
+        #     # return redirect(url_for('va_details', va=va))
+        # else:
+        #     results = []
+        #     return render_template('no-results.html', query=query)
     else:
         print('Request failed with status code:', response.status_code)
         print('Response:', response.text)
-        return render_template('error.html', message='Failed to retrieve VA details')
+        results = []
+
+    return render_template('results-temp.html', query=query, results=results)
+
+
+@app.route('/select-va', methods=['GET', 'POST'])
+def select_va():
+
+    #########
+    ## DO WE NEED TO SPLIT THIS ROUTE? OR AT LEAST AN IF STATEMENT BETWEEN GET AND POST
+    ## GET SHOULD BE GRABBING THE EXISTING JSON DATA FROM QUERY
+    ## POST SHOULD BE SUBMITTING THE VA ID TO VA_DETAILS
+    #########
+
+    
+    print('*****PRE IF STATEMENT*****')
+    if request.method == 'GET':
+        print('*****ITS A GET REQUEST*****')
+        # We have a GET request, which means we need to display multiple VA's and select one.
+
+        # Check if 'search_data' exists in the session
+        # if 'search_data' not in session:
+        #     # Handle the case where 'search_data' is not present
+        #     flash('Search data not found', 'error')
+        #     return redirect(url_for('search'))
+
+        # Grab the search_data sesssion from /search page
+        data = session.get('search_data')
+        print('data from sesion', data)
+
+        va = data['data']['Page']['staff']
+        return render_template('select-va.html', query=query, va=va)
+
+        # # Send the GraphQL query to the AniList API
+        # response = requests.post(anilist_api_url, json={'query': graphql_query, 'variables': variables}, headers=anilist_api_headers)
+        
+        # ## GET SHOULD BE GRABBING THE EXISTING JSON DATA FROM QUERY AND DISPLAYING
+        # if response.status_code == 200:
+
+        #     print('*****RESPONSE STATUS 200*****')
+        #     data = json.loads(response.text)
+        #     print('*****DATA PAGE STAFF*****')
+        #     print(data['data']['Page']['staff'])
+        #     va = data['data']['Page']['staff']
+        #     return render_template('select-va.html', query=query, va=va)
+        # #return render_template('select-va.html', va_id=va_id, query=query)
+        # else:
+        #     print('GET Request failed with status code:', response.status_code)
+        #     print('Response:', response.text)
+        #     return render_template('error.html', message='Failed to retrieve VA details')
+
+    # elif request.method == 'POST':
+
+        # Grab these two values which are used in variables for the graphql query
+        #va_id = request.form.get('va-id')
+        #query = request.form.get('va-search')
+
+
+
+        # Perform the GraphQL query with the search query
+        # graphql_query = '''
+        # query ($page: Int, $perPage: Int, $search: String) {
+        #     Page(page: $page, perPage: $perPage) {
+        #         pageInfo {
+        #             total
+        #             currentPage
+        #             lastPage
+        #             hasNextPage
+        #             perPage
+        #         }
+        #         staff(search: $search) {
+        #             id
+        #             name {
+        #                 first
+        #                 last
+        #                 full
+        #             }
+        #             image {
+        #                 large
+        #                 medium
+        #             }
+        #             characters (perPage: 3) {
+        #                 nodes {
+        #                     name {
+        #                         full
+        #                     }
+        #                     image {
+        #                         medium
+        #                     }
+        #                     media {
+        #                         nodes {
+        #                         id
+        #                             title {
+        #                                 romaji
+        #                                 english
+        #                                 userPreferred
+        #                             }
+        #                             coverImage {
+        #                                 medium
+        #                                 color
+        #                             } 
+        #                             meanScore
+        #                             popularity
+        #                             trending
+        #                             favourites
+        #                         }
+        #                     }
+        #                 }
+        #             }
+        #         }
+        #     }
+        # }
+        # '''
+
+        # variables = {
+        #     #'id': va_id,
+        #     'search': query,
+        #     'page': 1,
+        #     #'perPage': 10
+        # }
+
+
+    #     # Handle the POST request
+    #     # va_id = request.form.get('va-id')
+    #     # query = request.form.get('va-search')
+
+        
+    #     # Perform the necessary operations for the POST request
+    #     # ...
+
+    #     ## POST SHOULD BE RE-SUBMITTING SEARCH QUERY, BUT FROM THE SELECT-VA PAGE
+        
+    #     # Redirect to the va_details route with the appropriate va_id
+    #     return redirect(url_for('va_details', va_id=va_id))
+
+    
+
+    # # Process the response
+    # if response.status_code == 200:
+    #     data = json.loads(response.text)
+    #     print('*****DATA*****')
+    #     print(data)
+    #     print('*****DATA PAGE STAFF*****')
+    #     print(data['data']['Page']['staff'])
+    #     # print('*****DATA STAFF*****')
+    #     # print(data['staff'])
+    #     va = data['data']['Page']['staff']
+    #     # va = data['data']['staff']
+    #     return render_template('va-details.html', va=va)
+    # else:
+    #     print('Request failed with status code:', response.status_code)
+    #     print('Response:', response.text)
+    #     return render_template('error.html', message='Failed to retrieve VA details')
 
 
 
