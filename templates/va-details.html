@@ -1,40 +1,53 @@
 {% extends "base.html" %} {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col">
-            <h2>{{ va.name.full }}</h2>
+        <div class="col-sm-4 col-lg-3">
             <img
                 src="{{ va.image.large }}"
                 alt="{{ va.name.full }}"
                 class="img-fluid"
             />
-            <h3>Characters:</h3>
-            {% for character in va.characters.nodes %}
+        </div>
+        <div class="col-sm-8 col-lg-9">
+            <h1>{{ va.name.full }}</h1>
+
+            <p>
+                Gender: {{va.gender}}<br />
+                Age: {{va.age}}<br />
+                Date of Birth: {{ va.dateOfBirth }}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <h3>Roles:</h3>
+        {% for role in va.characterMedia.edges %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card">
                 <div class="card-body">
-                    <h4>{{ character.name.full }}</h4>
+                    <h4>{{ role.characters[0].name.full }}</h4>
                     <img
-                        src="{{ character.image.large }}"
-                        alt="{{ character.name.full }}"
+                        src="{{ role.characters[0].image.large }}"
+                        alt="{{ role.characters[0].name.full }}"
                         class="img-fluid"
                     />
-                    {% for media in character.media.nodes %}
-                    <h5>{{ media.title.romaji }}</h5>
+                    {# {% for media in character.media.nodes %} #}
+                    <h5>{{ role.node.title.romaji }}</h5>
                     <img
-                        src="{{ media.coverImage.medium }}"
-                        alt="{{ media.title.romaji }}"
+                        src="{{ role.node.coverImage.medium }}"
+                        alt="{{ role.node.title.romaji }}"
                         class="img-fluid"
                     />
-                    <p>Mean Score: {{ media.meanScore }}</p>
-                    <p>Popularity: {{ media.popularity }}</p>
+                    <p>Season Year: {{ role.node.seasonYear }}</p>
+                    <p>Mean Score: {{ role.node.meanScore }}</p>
+                    <p>Popularity: {{ role.node.popularity }}</p>
                     <!-- Display other media details as needed -->
                     AL Link:
-                    <a href="https://anilist.co/anime/{{media.id}}">Link</a>
-                    {% endfor %}
+                    <a href="https://anilist.co/anime/{{role.node.id}}">Link</a>
+                    {# {% endfor %} #}
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

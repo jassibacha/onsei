@@ -268,6 +268,45 @@ def va_details(va_id):
                     large
                     medium
                 }
+                languageV2
+                description
+                gender
+                primaryOccupations
+                age
+                characterMedia {
+                    edges {
+                        node {
+                            id
+                            idMal
+                            title {
+                                romaji
+                                english
+                                userPreferred
+                            }
+                            type
+                            seasonYear
+                            coverImage {
+                                large
+                                medium
+                                color
+                            }
+                            meanScore
+                            popularity
+                            trending
+                            favourites
+                        }
+                        characters {
+                            id
+                            name {
+                                full
+                            }
+                            image {
+                                large
+                                medium
+                            }
+                        }
+                    }
+                }
                 characters {
                     nodes {
                         name {
@@ -305,7 +344,7 @@ def va_details(va_id):
         'id': va_id,
         #'search': query,
         'page': 1,
-        #'perPage': 10
+        'perPage': 30
     }
 
     # Send the GraphQL query to the AniList API
@@ -319,6 +358,23 @@ def va_details(va_id):
         #print(data)
         # We need to grab the first list item in the results, even though there's only one result because we're pulling from ID!
         va = data['data']['Page']['staff'][0]
+
+        # Handle dateOfBirth
+        date_of_birth = va.get('dateOfBirth')
+        if date_of_birth:
+            birth_year = date_of_birth.get('year')
+            birth_month = date_of_birth.get('month')
+            birth_day = date_of_birth.get('day')
+            va['dateOfBirth'] = f"{birth_year}-{birth_month}-{birth_day}"
+
+        # Handle dateOfDeath
+        date_of_death = va.get('dateOfDeath')
+        if date_of_death:
+            death_year = date_of_death.get('year')
+            death_month = date_of_death.get('month')
+            death_day = date_of_death.get('day')
+            va['dateOfDeath'] = f"{death_year}-{death_month}-{death_day}"
+
         print('VA ID: ', va_id, 'VA RETURN: ', va)
         return render_template('va-details.html', va=va)
     else:
