@@ -1,0 +1,15 @@
+.roles {
+    .card-role {
+        .img-wrap {
+            position: relative;
+            img.character-img {
+            }
+            img.series-img {
+                width: 40%;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+            }
+        }
+    }
+}

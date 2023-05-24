@@ -14,38 +14,45 @@
             <p>
                 Gender: {{ output.va.gender }}<br />
                 Age: {{ output.va.age }}<br />
-                Date of Birth: {{ output.va.dateOfBirth }}
+                Date of Birth: {{ output.va.dateOfBirth.day }}-{{
+                output.va.dateOfBirth.month}}-{{ output.va.dateOfBirth.year }}
             </p>
         </div>
     </div>
-    <div class="row">
+    <div class="row roles">
         <h3>Roles:</h3>
         {% for media in output.characterMedia %} {% if media.characters %}
         <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card">
+            <div class="card card-role">
                 <div class="card-body">
-                    {% if media.characters[0].name %}
-                    <h4>{{ media.characters[0].name.full }}</h4>
-                    {% else %}
-                    <h4>Unknown Character</h4>
-                    {% endif %} {% if media.characters[0].image %}
-                    <img
-                        src="{{ media.characters[0].image.large }}"
-                        alt="{{ media.characters[0].name.full }}"
-                        class="img-fluid"
-                    />
+                    {% if media.characters[0].image %}
+                    <div class="img-wrap mb-3">
+                        <img
+                            src="{{ media.characters[0].image.large }}"
+                            alt="{{ media.characters[0].name.full }}"
+                            class="character-img img-fluid"
+                        />
+                        <img
+                            src="{{ media.node.coverImage.medium }}"
+                            alt="{{ media.node.title.romaji }}"
+                            class="series-img img-fluid"
+                        />
+                    </div>
                     {% else %}
                     <p>No image available</p>
+                    {% endif %} {% if media.characters[0].name %}
+                    <h5 class="character">
+                        {{ media.characters[0].name.full }}
+                    </h5>
+                    {% else %}
+                    <h5 class="character">Unknown Character</h5>
                     {% endif %}
-                    <h5>{{ media.node.title.romaji }}</h5>
-                    <img
-                        src="{{ media.node.coverImage.medium }}"
-                        alt="{{ media.node.title.romaji }}"
-                        class="img-fluid"
-                    />
-                    <p>Season Year: {{ media.node.seasonYear }}</p>
+                    <div class="series">{{ media.node.title.romaji }}</div>
+                    <p>Year: {{ media.node.seasonYear }}</p>
+                    {#
                     <p>Mean Score: {{ media.node.meanScore }}</p>
                     <p>Popularity: {{ media.node.popularity }}</p>
+                    #}
                     <!-- Display other media details as needed -->
                     AL Link:
                     <a href="https://anilist.co/anime/{{ media.node.id }}"

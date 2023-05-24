@@ -1,0 +1,9 @@
+.roles .card-role .img-wrap {
+  position: relative;
+}
+.roles .card-role .img-wrap img.series-img {
+  width: 40%;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}/*# sourceMappingURL=app.css.map */
