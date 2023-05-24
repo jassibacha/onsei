@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
 from forms import RegisterForm
+from api_clients import *
 from os import environ
 from dotenv import load_dotenv
 
@@ -246,142 +247,184 @@ def va_search():
 def va_details(va_id):
     """Grab the VA details by AniList ID"""
 
-    # Perform the GraphQL query with the search query
-    graphql_query = '''
-    query ($page: Int, $perPage: Int, $id: Int) {
-        Page(page: $page, perPage: $perPage) {
-            pageInfo {
-                total
-                currentPage
-                lastPage
-                hasNextPage
-                perPage
+    # Simplified query grabbing ONLY the staff info for the ID. No pagination needed. We're grabbing the series/character data in a separate call.
+    va_query = '''
+    query ($id: Int) {
+        Staff(id: $id) {
+            id
+            name {
+                first
+                last
+                full
             }
-            staff(id: $id) {
-                id
-                name {
-                    first
-                    last
-                    full
-                }
-                image {
-                    large
-                    medium
-                }
-                languageV2
-                description
-                gender
-                primaryOccupations
-                age
-                characterMedia {
-                    edges {
-                        node {
-                            id
-                            idMal
-                            title {
-                                romaji
-                                english
-                                userPreferred
-                            }
-                            type
-                            seasonYear
-                            coverImage {
-                                large
-                                medium
-                                color
-                            }
-                            meanScore
-                            popularity
-                            trending
-                            favourites
-                        }
-                        characters {
-                            id
-                            name {
-                                full
-                            }
-                            image {
-                                large
-                                medium
-                            }
-                        }
-                    }
-                }
-                characters {
-                    nodes {
-                        name {
-                            full
-                        }
-                        image {
-                            large
-                        }
-                        media {
-                            nodes {
-                            id
-                                title {
-                                    romaji
-                                    english
-                                    userPreferred
-                                }
-                                coverImage {
-                                    medium
-                                    color
-                                } 
-                                meanScore
-                                popularity
-                                trending
-                                favourites
-                            }
-                        }
-                    }
-                }
+            image {
+                large
+                medium
             }
+            languageV2
+            description
+            gender
+            primaryOccupations
+            dateOfBirth {
+                year
+                month
+                day
+            }
+            dateOfDeath {
+                year
+                month
+                day
+            }
+            age
         }
     }
     '''
 
+    # Variables, we literally only need ID here.
     variables = {
         'id': va_id,
-        #'search': query,
-        'page': 1,
-        'perPage': 30
     }
 
     # Send the GraphQL query to the AniList API
-    response = requests.post(anilist_api_url, json={'query': graphql_query, 'variables': variables}, headers=anilist_api_headers)
-
+    response = make_api_request(va_query, variables)
 
     # Process the response
-    if response.status_code == 200:
-        print('*** VA DETAILS - 200 CODE, RESPONSE IS GOOD ***')
-        data = json.loads(response.text)
-        #print(data)
-        # We need to grab the first list item in the results, even though there's only one result because we're pulling from ID!
-        va = data['data']['Page']['staff'][0]
+    if response is not None:
+        va = response['data']['Staff']
 
-        # Handle dateOfBirth
-        date_of_birth = va.get('dateOfBirth')
-        if date_of_birth:
-            birth_year = date_of_birth.get('year')
-            birth_month = date_of_birth.get('month')
-            birth_day = date_of_birth.get('day')
-            va['dateOfBirth'] = f"{birth_year}-{birth_month}-{birth_day}"
+        print('&&&&&&&&&&& RESPONSE FOR VA: &&&&&&&&&&&' )
+        print(va)
 
-        # Handle dateOfDeath
-        date_of_death = va.get('dateOfDeath')
-        if date_of_death:
-            death_year = date_of_death.get('year')
-            death_month = date_of_death.get('month')
-            death_day = date_of_death.get('day')
-            va['dateOfDeath'] = f"{death_year}-{death_month}-{death_day}"
+        # Fetch all characterMedia series for the VA
+        character_media = fetch_all_character_media(va_id)
 
-        print('VA ID: ', va_id, 'VA RETURN: ', va)
-        return render_template('va-details.html', va=va)
-    else:
-        print('Request failed with status code:', response.status_code)
-        print('Response:', response.text)
+        # Construct the output dictionary
+        output = {
+            'va': va,
+            'characterMedia': character_media
+        }
+
+        return render_template('va-details.html', output=output)
 
     return render_template('va-details.html', va_id=va_id)
+    
+
+
+    #    va = data['data']['Page']['staff'][0]
+
+
+# @app.route('/va/<int:va_id>', methods=['GET', 'POST'])
+# def va_details(va_id):
+#     """Grab the VA details by AniList ID"""
+
+#     # Perform the GraphQL query with the search query
+#     graphql_query = '''
+#     query ($page: Int, $perPage: Int, $id: Int) {
+#         Page(page: $page, perPage: $perPage) {
+#             pageInfo {
+#                 total
+#                 currentPage
+#                 lastPage
+#                 hasNextPage
+#                 perPage
+#             }
+#             staff(id: $id) {
+#                 id
+#                 name {
+#                     first
+#                     last
+#                     full
+#                 }
+#                 image {
+#                     large
+#                     medium
+#                 }
+#                 languageV2
+#                 description
+#                 gender
+#                 primaryOccupations
+#                 age
+#                 characterMedia {
+#                     edges {
+#                         node {
+#                             id
+#                             idMal
+#                             title {
+#                                 romaji
+#                                 english
+#                                 userPreferred
+#                             }
+#                             type
+#                             seasonYear
+#                             coverImage {
+#                                 large
+#                                 medium
+#                                 color
+#                             }
+#                             meanScore
+#                             popularity
+#                             trending
+#                             favourites
+#                         }
+#                         characters {
+#                             id
+#                             name {
+#                                 full
+#                             }
+#                             image {
+#                                 large
+#                                 medium
+#                             }
+#                         }
+#                     }
+#                 }
+#             }
+#         }
+#     }
+#     '''
+
+#     variables = {
+#         'id': va_id,
+#         #'search': query,
+#         'page': 1,
+#         'perPage': 50
+#     }
+
+#     # Send the GraphQL query to the AniList API
+#     response = requests.post(anilist_api_url, json={'query': graphql_query, 'variables': variables}, headers=anilist_api_headers)
+
+
+#     # Process the response
+#     if response.status_code == 200:
+#         print('*** VA DETAILS - 200 CODE, RESPONSE IS GOOD ***')
+#         data = json.loads(response.text)
+#         #print(data)
+#         # We need to grab the first list item in the results, even though there's only one result because we're pulling from ID!
+#         va = data['data']['Page']['staff'][0]
+
+#         # Handle dateOfBirth
+#         date_of_birth = va.get('dateOfBirth')
+#         if date_of_birth:
+#             birth_year = date_of_birth.get('year')
+#             birth_month = date_of_birth.get('month')
+#             birth_day = date_of_birth.get('day')
+#             va['dateOfBirth'] = f"{birth_year}-{birth_month}-{birth_day}"
+
+#         # Handle dateOfDeath
+#         date_of_death = va.get('dateOfDeath')
+#         if date_of_death:
+#             death_year = date_of_death.get('year')
+#             death_month = date_of_death.get('month')
+#             death_day = date_of_death.get('day')
+#             va['dateOfDeath'] = f"{death_year}-{death_month}-{death_day}"
+
+#         print('VA ID: ', va_id, 'VA RETURN: ', va)
+#         return render_template('va-details.html', va=va)
+#     else:
+#         print('Request failed with status code:', response.status_code)
+#         print('Response:', response.text)
+
+#     return render_template('va-details.html', va_id=va_id)
 
 
 @app.route('/select-va', methods=['GET', 'POST'])

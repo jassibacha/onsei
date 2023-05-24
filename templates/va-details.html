@@ -3,51 +3,63 @@
     <div class="row">
         <div class="col-sm-4 col-lg-3">
             <img
-                src="{{ va.image.large }}"
-                alt="{{ va.name.full }}"
+                src="{{ output.va.image.large }}"
+                alt="{{ output.va.name.full }}"
                 class="img-fluid"
             />
         </div>
         <div class="col-sm-8 col-lg-9">
-            <h1>{{ va.name.full }}</h1>
+            <h1>{{ output.va.name.full }}</h1>
 
             <p>
-                Gender: {{va.gender}}<br />
-                Age: {{va.age}}<br />
-                Date of Birth: {{ va.dateOfBirth }}
+                Gender: {{ output.va.gender }}<br />
+                Age: {{ output.va.age }}<br />
+                Date of Birth: {{ output.va.dateOfBirth }}
             </p>
         </div>
     </div>
     <div class="row">
         <h3>Roles:</h3>
-        {% for role in va.characterMedia.edges %}
+        {% for media in output.characterMedia %} {% if media.characters %}
         <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card">
                 <div class="card-body">
-                    <h4>{{ role.characters[0].name.full }}</h4>
+                    {% if media.characters[0].name %}
+                    <h4>{{ media.characters[0].name.full }}</h4>
+                    {% else %}
+                    <h4>Unknown Character</h4>
+                    {% endif %} {% if media.characters[0].image %}
                     <img
-                        src="{{ role.characters[0].image.large }}"
-                        alt="{{ role.characters[0].name.full }}"
+                        src="{{ media.characters[0].image.large }}"
+                        alt="{{ media.characters[0].name.full }}"
                         class="img-fluid"
                     />
-                    {# {% for media in character.media.nodes %} #}
-                    <h5>{{ role.node.title.romaji }}</h5>
+                    {% else %}
+                    <p>No image available</p>
+                    {% endif %}
+                    <h5>{{ media.node.title.romaji }}</h5>
                     <img
-                        src="{{ role.node.coverImage.medium }}"
-                        alt="{{ role.node.title.romaji }}"
+                        src="{{ media.node.coverImage.medium }}"
+                        alt="{{ media.node.title.romaji }}"
                         class="img-fluid"
                     />
-                    <p>Season Year: {{ role.node.seasonYear }}</p>
-                    <p>Mean Score: {{ role.node.meanScore }}</p>
-                    <p>Popularity: {{ role.node.popularity }}</p>
+                    <p>Season Year: {{ media.node.seasonYear }}</p>
+                    <p>Mean Score: {{ media.node.meanScore }}</p>
+                    <p>Popularity: {{ media.node.popularity }}</p>
                     <!-- Display other media details as needed -->
                     AL Link:
-                    <a href="https://anilist.co/anime/{{role.node.id}}">Link</a>
-                    {# {% endfor %} #}
+                    <a href="https://anilist.co/anime/{{ media.node.id }}"
+                        >Link</a
+                    >
                 </div>
             </div>
         </div>
-        {% endfor %}
+        {% endif %} {% endfor %}
+    </div>
+    <!-- Temporary section to display the full output string -->
+    <div>
+        <pre>{{ output }}</pre>
     </div>
 </div>
+
 {% endblock %}
