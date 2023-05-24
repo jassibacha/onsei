@@ -2,8 +2,9 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 import requests
 import json
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, migrate, User
 from forms import SignUpForm, LoginForm, UserEditForm
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from api_clients import *
 from os import environ
@@ -12,6 +13,8 @@ from dotenv import load_dotenv
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
+# db = SQLAlchemy()
+# migrate = Migrate(app, db)
 
 load_dotenv()
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
@@ -29,6 +32,9 @@ debug = DebugToolbarExtension(app)
 
 # Call our connect_db function from models
 connect_db(app)
+
+# Initialize Flask-Migrate
+migrate.init_app(app, db)
 
 # db = SQLAlchemy(app)
 # bcrypt = Bcrypt(app)
@@ -74,6 +80,17 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 
+@app.route('/test-db')
+def test_db():
+    try:
+        db.session.execute(text('SELECT 1'))
+        return 'Database connection successful'
+    except Exception as e:
+        return f'Database connection failed: {str(e)}'
+
+
+
+
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     """Handle user signup.
@@ -98,9 +115,9 @@ def signup():
             db.session.commit()
 
         except IntegrityError as e:
-            flash("Signup Error: Already Taken", 'danger')
             print('Error is in Signup except')
             print(f"IntegrityError: {str(e)}")  # Add this line for debugging
+            flash(f"Signup Error: Already Taken {e}", 'danger')
             
             return render_template('users/signup.html', form=form)
 

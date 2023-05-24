@@ -1,11 +1,24 @@
 """SQLAlchemy models for Onsei"""
 
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
+migrate = Migrate()
+
+
+def connect_db(app):
+    """Connect this database to provided Flask app.
+
+    You should call this in your Flask app.
+    """
+    db.app = app
+    db.init_app(app)
+    migrate.init_app(app, db)
 
 
 class User(db.Model):
@@ -35,10 +48,10 @@ class User(db.Model):
         nullable=False,
     )
 
-    # anilist_username = db.Column(
-    #     db.String(255),
-    #     nullable=False,
-    # )
+    anilist_username = db.Column(
+        db.String(255),
+        nullable=True
+    )
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -49,6 +62,15 @@ class User(db.Model):
 
         Hashes password and adds user to system.
         """
+
+        # Check if the username or email already exists
+        existing_user = cls.query.filter(
+            (cls.username == username) | (cls.email == email)
+        ).first()
+
+        if existing_user:
+            raise IntegrityError("Username or email already in use", orig=None, params=None)
+
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
@@ -83,12 +105,3 @@ class User(db.Model):
 
 
 
-
-def connect_db(app):
-    """Connect this database to provided Flask app.
-
-    You should call this in your Flask app.
-    """
-
-    db.app = app
-    db.init_app(app)

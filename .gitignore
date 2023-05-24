@@ -4,3 +4,4 @@ __pycache__
 secrets.py
 secret.py
 .env
+/migrations/
