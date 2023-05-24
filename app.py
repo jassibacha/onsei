@@ -187,6 +187,7 @@ def profile_edit():
             # Now we can update username if we want
             user.username = form.username.data
             user.email = form.email.data
+            user.anilist_username = form.anilist_username.data
 
             db.session.commit()
             flash("Profile edited successfully!", 'success')
@@ -196,6 +197,21 @@ def profile_edit():
 
     return render_template('users/edit-profile.html', form=form, user_id=user.id)
 
+@app.route('/profile/delete', methods=["POST"])
+def delete_user():
+    """Delete user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    do_logout()
+
+    db.session.delete(g.user)
+    db.session.commit()
+    
+    flash("Account deleted", "danger")
+    return redirect("/signup")
 
 ##############################################################################
 # App Routes

@@ -3,11 +3,16 @@
     <div class="row">
         <div class="col-sm-12">
             <h1>Your Profile</h1>
+
+            <p><strong>Username:</strong> {{user.username}}</p>
+            <p><strong>Email:</strong> {{user.email}}</p>
+            <p><strong>AniList Username:</strong> {{user.anilist_username}}</p>
+
             {% if g.user.id == user.id %}
             <a href="/profile/edit" class="btn btn-outline-secondary"
                 >Edit Profile</a
             >
-            <form method="POST" action="/users/delete" class="form-inline">
+            <form method="POST" action="/profile/delete" class="form-inline">
                 <button class="btn btn-outline-danger ml-2">
                     Delete Account
                 </button>

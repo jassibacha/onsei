@@ -37,4 +37,5 @@ class LoginForm(FlaskForm):
 class UserEditForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    anilist_username = StringField('AniList Username')
     password = PasswordField('Password', validators=[DataRequired()])
