@@ -1,14 +1,15 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, session
+from flask import Flask, render_template, redirect, url_for, flash, request, session, g, abort, jsonify, current_app
 import requests
 import json
 from flask_debugtoolbar import DebugToolbarExtension
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from flask_wtf import FlaskForm
-from forms import RegisterForm
+from models import db, connect_db, User
+from forms import SignUpForm, LoginForm, UserEditForm
+from sqlalchemy.exc import IntegrityError
 from api_clients import *
 from os import environ
 from dotenv import load_dotenv
+
+CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
@@ -26,8 +27,11 @@ app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 
 debug = DebugToolbarExtension(app)
 
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
+# Call our connect_db function from models
+connect_db(app)
+
+# db = SQLAlchemy(app)
+# bcrypt = Bcrypt(app)
 
 # Set the GraphQL endpoint URL
 anilist_api_url = 'https://graphql.anilist.co'
@@ -42,8 +46,144 @@ anilist_api_headers = {'Content-Type': 'application/json'}
 # }
 # Check .txt file for chatgpt oauth suggestions, for now we'll just use public data via open api connections
 
+##############################################################################
+# User signup/login/logout
 
-# Routes
+
+@app.before_request
+def add_user_to_g():
+    """If we're logged in, add curr user to Flask global."""
+
+    if CURR_USER_KEY in session:
+        g.user = User.query.get(session[CURR_USER_KEY])
+
+    else:
+        g.user = None
+
+
+def do_login(user):
+    """Log in user."""
+
+    session[CURR_USER_KEY] = user.id
+
+
+def do_logout():
+    """Logout user."""
+
+    if CURR_USER_KEY in session:
+        del session[CURR_USER_KEY]
+
+
+@app.route('/signup', methods=["GET", "POST"])
+def signup():
+    """Handle user signup.
+
+    Create new user and add to DB. Redirect to home page.
+
+    If form not valid, present form.
+
+    If the there already is a user with that username: flash message
+    and re-present form.
+    """
+
+    form = SignUpForm()
+
+    if form.validate_on_submit():
+        try:
+            user = User.signup(
+                username=form.username.data,
+                password=form.password.data,
+                email=form.email.data
+            )
+            db.session.commit()
+
+        except IntegrityError as e:
+            flash("Signup Error: Already Taken", 'danger')
+            print('Error is in Signup except')
+            print(f"IntegrityError: {str(e)}")  # Add this line for debugging
+            
+            return render_template('users/signup.html', form=form)
+
+        do_login(user)
+
+        return redirect("/")
+
+    else:
+        return render_template('users/signup.html', form=form)
+
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    """Handle user login."""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.authenticate(form.username.data,form.password.data)
+
+        if user:
+            do_login(user)
+            flash(f"Hello, {user.username}!", "success")
+            return redirect("/")
+
+        flash("Invalid credentials.", 'danger')
+
+    return render_template('users/login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    """Handle logout of user."""
+    do_logout()
+    flash(f"Successfully logged out.", "danger")
+    return redirect("/")
+
+##############################################################################
+# General user routes:
+
+@app.route('/profile')
+def profile_view():
+    """Show user profile."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(g.user.id)
+    
+    return render_template('users/profile.html', user=user)
+
+@app.route('/profile/edit', methods=["GET", "POST"])
+def profile_edit():
+    """Update profile for current user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    #print(g.user)
+    
+    user = g.user
+    form = UserEditForm(obj=user)
+    
+    if form.validate_on_submit():
+        # We grab user.username from user = g.user to auth it's correct user
+        # We're also verifying the password here, password can't be changed
+        if User.authenticate(user.username,form.password.data):
+            # Now we can update username if we want
+            user.username = form.username.data
+            user.email = form.email.data
+
+            db.session.commit()
+            flash("Profile edited successfully!", 'success')
+            return redirect(f"/profile")
+
+        flash("Wrong password, try again.", 'danger')
+
+    return render_template('users/edit-profile.html', form=form, user_id=user.id)
+
+
+##############################################################################
+# App Routes
 @app.route('/')
 def search_form():
     """Search for a voice actor"""
@@ -672,6 +812,10 @@ def select_va():
 # def login():
 #     # Implement your login logic here
 #     return render_template('login.html')
+
+# Add the following lines to create the application context and call db.create_all()
+with app.app_context():
+    db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True)

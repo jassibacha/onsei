@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Your Profile</h1>
+            {% if g.user.id == user.id %}
+            <a href="/profile/edit" class="btn btn-outline-secondary"
+                >Edit Profile</a
+            >
+            <form method="POST" action="/users/delete" class="form-inline">
+                <button class="btn btn-outline-danger ml-2">
+                    Delete Account
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
