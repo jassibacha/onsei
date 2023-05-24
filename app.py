@@ -36,9 +36,6 @@ connect_db(app)
 # Initialize Flask-Migrate
 migrate.init_app(app, db)
 
-# db = SQLAlchemy(app)
-# bcrypt = Bcrypt(app)
-
 # Set the GraphQL endpoint URL
 anilist_api_url = 'https://graphql.anilist.co'
 # Set the request headers
@@ -82,6 +79,7 @@ def do_logout():
 
 @app.route('/test-db')
 def test_db():
+    """Test and confim database connection. DELETE THIS ON PRODUCTION!"""
     try:
         db.session.execute(text('SELECT 1'))
         return 'Database connection successful'

@@ -45,16 +45,12 @@
                             <h5 class="card-title">
                                 {{ voice_actor.name.full }}
                             </h5>
-                            <form action="/va-details" method="POST">
-                                <input
-                                    type="hidden"
-                                    name="va-id"
-                                    value="{{ voice_actor.id }}"
-                                />
-                                <button type="submit" class="btn btn-primary">
-                                    View Details
-                                </button>
-                            </form>
+                            <a
+                                href="/va/{{ voice_actor.id }}"
+                                class="btn btn-primary"
+                            >
+                                View Voice Actor
+                            </a>
                         </div>
                     </div>
                 </div>
