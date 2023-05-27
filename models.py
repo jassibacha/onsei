@@ -3,8 +3,10 @@
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import PickleType
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
+from datetime import datetime
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -52,6 +54,11 @@ class User(db.Model):
         db.String(255),
         nullable=True
     )
+
+    anime_list = db.Column(PickleType, nullable=True)
+    anime_list_updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
