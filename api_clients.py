@@ -108,14 +108,55 @@ def fetch_all_character_media(va_id):
     return []
 
 
-# class ALClient(requests.Session):
-#     # Initialize
-#     def __init__(self, token, store) -> None:
-#         # Passes everything from parent class
-#         super().__init__()
-#         self.token = token # Probably don't need right now
-#         self.store = store # Probably don't need right now
-#         self.baseurl = 'https://graphql.anilist.co'
-#         self.headers.update({'Content-Type': 'application/json'})
 
-#     def rate_hook(res, *args, **kwargs)
+def fetch_user_anime_list(username):
+    """Fetch all characterMedia series for a VA based on ID."""
+
+    # GraphQL query to fetch characterMedia by staff ID
+    graphql_query = '''
+    query UserListSearch($userName: String) {
+        MediaListCollection(userName: $userName, type: ANIME, status_in: [COMPLETED, CURRENT]) {
+            lists {
+                name
+                entries {
+                    mediaId
+                    status
+                }
+            }
+        }
+    }
+    '''
+
+    # Variables for the GraphQL query
+    variables = {
+        "userName": username,
+        "chunk": 0,
+        "perChunk": 500
+    }
+
+    # Make the initial API request
+    response = make_api_request(graphql_query, variables)
+
+    all_series = []
+
+    while True:
+        # Make the API request
+        response = make_api_request(graphql_query, variables)
+
+        if response is not None:
+            print('*** USER LIST RESPONSE IS NOT NONE ***')
+            lists = response['data']['MediaListCollection']['lists']
+
+            # Combine all entries from all lists
+            for list in lists:
+                all_series.extend(list['entries'])
+
+            # If the number of entries is less than perChunk, it means we've got all the data
+            if len(lists[-1]['entries']) < variables['perChunk']:
+                break
+
+            # Otherwise, increase the chunk for the next iteration
+            print('*** USER LIST +1 CHUNK ***')
+            variables['chunk'] += 1
+
+    return all_series
