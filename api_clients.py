@@ -120,7 +120,6 @@ def fetch_user_anime_list(username):
                 name
                 entries {
                     mediaId
-                    status
                 }
             }
         }
@@ -129,42 +128,26 @@ def fetch_user_anime_list(username):
 
     # Variables for the GraphQL query
     variables = {
-        "userName": username,
-        "chunk": 0,
-        "perChunk": 500
+        "userName": username
     }
 
     # Make the initial API request
-    # response = make_api_request(graphql_query, variables)
+    response = make_api_request(graphql_query, variables)
 
     all_series = []
 
-    while True:
-        # Make the API request
-        response = make_api_request(graphql_query, variables)
+    if response is not None:
+        print('*** USER LIST RESPONSE IS NOT NONE ***')
+        lists = response['data']['MediaListCollection']['lists']
 
-        if response is not None:
-            print('*** USER LIST RESPONSE IS NOT NONE ***')
-            lists = response['data']['MediaListCollection']['lists']
+        # Combine all entries from all lists
+        for lst in lists:
+            print(f"{lst['name']} Length: {len(lst['entries'])}")
+            for entry in lst['entries']:
+                all_series.append(entry['mediaId'])
 
-            # Combine all entries from all lists
-            for list in lists:
-                for entry in list['entries']:
-                    all_series.append(entry['mediaId'])
-
-            print('ALL_SERIES: ', len(all_series))
-            print('ENTRIES: ', len(lists[-1]['entries']))
-
-            # If the number of entries is less than perChunk, it means we've got all the data
-            if len(lists[-1]['entries']) < variables['perChunk']:
-                break
-
-            # Otherwise, increase the chunk for the next iteration
-            #print('ALL_SERIES: ', all_series)
-            variables['chunk'] += 1
-
-            #print(f"*** USER LIST +1 CHUNK ({variables['chunk']}) ***")
+        print('ALL_SERIES: ', len(all_series))
+        # print('ENTRIES: ', len(lists[-1]['entries']))
 
     #print(all_series)
-
     return all_series
