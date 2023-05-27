@@ -417,7 +417,7 @@ def va_details(va_id):
         app.logger.debug(va)
 
         # Fetch all characterMedia series for the VA
-        character_media = fetch_all_character_media(va_id)
+        character_media = fetch_all_character_media(va_id, app)
 
         # Construct the output dictionary
         output = {

@@ -89,7 +89,7 @@ def fetch_all_character_media(va_id, app):
             app.logger.debug("*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***")
             variables['page'] += 1
             app.logger.debug(f"*** PAGE {variables['page']} OF {character_media['pageInfo']['total']} ***")
-            response = make_api_request(graphql_query, variables)
+            response = make_api_request(graphql_query, variables, app)
 
             #print(f'@@@@ REQUESTED PAGE {variables['page']} OF {character_media['pageInfo']['total']} @@@@')
 
@@ -97,7 +97,7 @@ def fetch_all_character_media(va_id, app):
 
                 app.logger.debug('*** RESPONSE WORKED, EXTEND all_series ***')
                 character_media = response['data']['Staff']['characterMedia']
-                app.logger.debug('EXTENSION: ', character_media['edges'])
+                #app.logger.debug('EXTENSION: ', character_media['edges'])
                 all_series.extend(character_media['edges'])
             else:
                 break
