@@ -110,7 +110,7 @@ def fetch_all_character_media(va_id):
 
 
 def fetch_user_anime_list(username):
-    """Fetch all characterMedia series for a VA based on ID."""
+    """Fetch all completed / current by username"""
 
     # GraphQL query to fetch characterMedia by staff ID
     graphql_query = '''
@@ -135,7 +135,7 @@ def fetch_user_anime_list(username):
     }
 
     # Make the initial API request
-    response = make_api_request(graphql_query, variables)
+    # response = make_api_request(graphql_query, variables)
 
     all_series = []
 
@@ -149,16 +149,22 @@ def fetch_user_anime_list(username):
 
             # Combine all entries from all lists
             for list in lists:
-                all_series.extend(list['entries'])
+                for entry in list['entries']:
+                    all_series.append(entry['mediaId'])
+
+            print('ALL_SERIES: ', len(all_series))
+            print('ENTRIES: ', len(lists[-1]['entries']))
 
             # If the number of entries is less than perChunk, it means we've got all the data
             if len(lists[-1]['entries']) < variables['perChunk']:
                 break
 
             # Otherwise, increase the chunk for the next iteration
-            print('*** USER LIST +1 CHUNK ***')
+            #print('ALL_SERIES: ', all_series)
             variables['chunk'] += 1
 
-    print(all_series)
+            #print(f"*** USER LIST +1 CHUNK ({variables['chunk']}) ***")
+
+    #print(all_series)
 
     return all_series
