@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session, g, abort, jsonify, current_app
 import requests
-
+import logging
 import json
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, migrate, User
@@ -16,6 +16,8 @@ CURR_USER_KEY = "curr_user"
 LIST_EXPIRY = 7
 
 app = Flask(__name__)
+
+
 # db = SQLAlchemy()
 # migrate = Migrate(app, db)
 
@@ -32,6 +34,13 @@ app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
+
+# Enable debug
+app.debug = True
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+app.logger.setLevel(logging.DEBUG)
 
 # Call our connect_db function from models
 connect_db(app)
@@ -72,14 +81,23 @@ def do_login(user):
 
     session[CURR_USER_KEY] = user.id
 
+    app.logger.debug('******* LOGIN STARTED *******')
+    app.logger.debug('LIST LAST UPDATED AT: %s', user.anime_list_updated_at)
+    app.logger.debug('CURRENT DATE/TIME: %s', datetime.utcnow())
+    app.logger.debug('*****************************')
+
     # Check if user's anime list needs to be updated
     if not user.anime_list_updated_at or datetime.utcnow() - user.anime_list_updated_at > timedelta(days=LIST_EXPIRY):
+        app.logger.debug("***** IT'S BEEN MORE THAN 7 DAYS. RE-FETCH LIST. *****")
         # Update anime list for user
         user.anime_list = fetch_user_anime_list(user.anilist_username)
         user.anime_list_updated_at = datetime.utcnow()
 
         # Commit the changes to the database
         db.session.commit()
+    else:
+        app.logger.debug("***** IT'S BEEN LESS THAN 7 DAYS. LIST IS GOOD. *****")
+
 
 
 def do_logout():
@@ -125,8 +143,8 @@ def signup():
             db.session.commit()
 
         except IntegrityError as e:
-            print('Error is in Signup except')
-            print(f"IntegrityError: {str(e)}")  # Add this line for debugging
+            app.logger.debug('Error is in Signup except')
+            app.logger.debug(f"IntegrityError: {str(e)}")  # Add this line for debugging
             flash(f"Signup Error: Already Taken {e}", 'danger')
             
             return render_template('users/signup.html', form=form)
@@ -311,13 +329,13 @@ def va_search():
 
     # Process the response
     if response.status_code == 200:
-        print ('*** 200 CODE, RESPONSE IS GOOD ***')
+        app.logger.debug('*** 200 CODE, RESPONSE IS GOOD ***')
         data = json.loads(response.text)
         va = data['data']['Page']['staff']
         return render_template('va-search.html', va=va, query=query)
     else:
-        print('Request failed with status code:', response.status_code)
-        print('Response:', response.text)
+        app.logger.debug('Request failed with status code:', response.status_code)
+        app.logger.debug('Response:', response.text)
 
     return render_template('va-search.html')
 
@@ -371,8 +389,8 @@ def va_details(va_id):
     if response is not None:
         va = response['data']['Staff']
 
-        print('&&&&&&&&&&& RESPONSE FOR VA: &&&&&&&&&&&' )
-        print(va)
+        app.logger.debug('&&&&&&&&&&& RESPONSE FOR VA: &&&&&&&&&&&' )
+        app.logger.debug(va)
 
         # Fetch all characterMedia series for the VA
         character_media = fetch_all_character_media(va_id)
@@ -504,35 +522,6 @@ def va_details(va_id):
 #         print('Response:', response.text)
 
 #     return render_template('va-details.html', va_id=va_id)
-
-
-@app.route('/select-va', methods=['GET', 'POST'])
-def select_va():
-
-    #########
-    ## DO WE NEED TO SPLIT THIS ROUTE? OR AT LEAST AN IF STATEMENT BETWEEN GET AND POST
-    ## GET SHOULD BE GRABBING THE EXISTING JSON DATA FROM QUERY
-    ## POST SHOULD BE SUBMITTING THE VA ID TO VA_DETAILS
-    #########
-
-    
-    print('*****PRE IF STATEMENT*****')
-    if request.method == 'GET':
-        print('*****ITS A GET REQUEST*****')
-        # We have a GET request, which means we need to display multiple VA's and select one.
-
-        # Check if 'search_data' exists in the session
-        # if 'search_data' not in session:
-        #     # Handle the case where 'search_data' is not present
-        #     flash('Search data not found', 'error')
-        #     return redirect(url_for('search'))
-
-        # Grab the search_data sesssion from /search page
-        data = session.get('search_data')
-        print('data from sesion', data)
-
-        va = data['data']['Page']['staff']
-        return render_template('select-va.html', query=query, va=va)
 
         # # Send the GraphQL query to the AniList API
         # response = requests.post(anilist_api_url, json={'query': graphql_query, 'variables': variables}, headers=anilist_api_headers)
