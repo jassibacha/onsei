@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session, g, abort, jsonify, current_app
 import requests
+
 import json
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, migrate, User
@@ -7,10 +8,12 @@ from forms import SignUpForm, LoginForm, UserEditForm
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from api_clients import *
+from datetime import datetime, timedelta
 from os import environ
 from dotenv import load_dotenv
 
 CURR_USER_KEY = "curr_user"
+LIST_EXPIRY = 7
 
 app = Flask(__name__)
 # db = SQLAlchemy()
@@ -68,6 +71,15 @@ def do_login(user):
     """Log in user."""
 
     session[CURR_USER_KEY] = user.id
+
+    # Check if user's anime list needs to be updated
+    if not user.anime_list_updated_at or datetime.utcnow() - user.anime_list_updated_at > timedelta(days=LIST_EXPIRY):
+        # Update anime list for user
+        user.anime_list = fetch_user_anime_list(user.anilist_username)
+        user.anime_list_updated_at = datetime.utcnow()
+
+        # Commit the changes to the database
+        db.session.commit()
 
 
 def do_logout():
@@ -219,111 +231,7 @@ def delete_user():
 def search_form():
     """Search for a voice actor"""
 
-    return render_template('search-temp.html')
-
-
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-    query = request.form.get('va-search')
-
-    # Perform the GraphQL query with the search query
-    graphql_query = '''
-    query ($page: Int, $perPage: Int, $search: String) {
-        Page(page: $page, perPage: $perPage) {
-            pageInfo {
-                total
-                currentPage
-                lastPage
-                hasNextPage
-                perPage
-            }
-            staff(search: $search) {
-                id
-                name {
-                    first
-                    last
-                    full
-                }
-                image {
-                    large
-                    medium
-                }
-                characters (perPage: 3) {
-                    nodes {
-                        name {
-                            full
-                        }
-                        image {
-                            medium
-                        }
-                        media {
-                            nodes {
-                            id
-                                title {
-                                    romaji
-                                    english
-                                    userPreferred
-                                }
-                                coverImage {
-                                    medium
-                                    color
-                                } 
-                                meanScore
-                                popularity
-                                trending
-                                favourites
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    '''
-
-    variables = {
-        'search': query,
-        'page': 1,
-        #'perPage': 1
-    }
-
-    # Send the GraphQL query to the AniList API
-    response = requests.post(anilist_api_url, json={'query': graphql_query, 'variables': variables}, headers=anilist_api_headers)
-
-    # Process the response
-    if response.status_code == 200:
-        data = json.loads(response.text)
-        # Add the data to session so we can pull it in va-select if necessary
-        # session['search_data'] = data
-
-        # Add the search query to session quickly
-        session['va_query'] = query
-
-        # Extract the search results from the response
-        staff_list = data['data']['Page']['staff']
-        staff_count = len(staff_list)
-        ###
-        ### SHOULD I JUST DO A BASIC PARSE, SEE IF THERES MORE THAN 1, THEN DO A DETAILED PARSE FROM THERE?
-        ###
-        if staff_count > 1:
-            print('More than one VA found, go to select_va')
-            return redirect(url_for('select_va', query=query))
-        elif staff_count == 1:
-            print('Single staff found, go to va details page, VA: ')
-            va = staff_list[0]
-            print(va)
-            va_id = staff_list[0]['id']
-            return render_template('va-details.html', va=va)
-            # return redirect(url_for('va_details', va=va))
-        else:
-            results = []
-            return render_template('no-results.html', query=query)
-    else:
-        print('Request failed with status code:', response.status_code)
-        print('Response:', response.text)
-        results = []
-
-    return render_template('results-temp.html', query=query, results=results)
+    return redirect(url_for('va_search'))
 
 
 

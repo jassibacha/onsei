@@ -159,4 +159,6 @@ def fetch_user_anime_list(username):
             print('*** USER LIST +1 CHUNK ***')
             variables['chunk'] += 1
 
+    print(all_series)
+
     return all_series
