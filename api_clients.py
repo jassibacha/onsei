@@ -1,8 +1,7 @@
 import requests
 import json
 
-
-def make_api_request(query, variables):
+def make_api_request(query, variables, app):
 
     # Set the GraphQL endpoint URL
     anilist_api_url = 'https://graphql.anilist.co'
@@ -15,11 +14,11 @@ def make_api_request(query, variables):
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        print('Request failed with status code:', response.status_code)
-        print('Response:', response.text)
+        app.logger.debug('Request failed with status code:', response.status_code)
+        app.logger.debug('Response:', response.text)
         return None
 
-def fetch_all_character_media(va_id):
+def fetch_all_character_media(va_id, app):
     """Fetch all characterMedia series for a VA based on ID."""
 
     # GraphQL query to fetch characterMedia by staff ID
@@ -78,26 +77,27 @@ def fetch_all_character_media(va_id):
     }
 
     # Make the initial API request
-    response = make_api_request(graphql_query, variables)
+    response = make_api_request(graphql_query, variables, app)
 
     if response is not None:
-        print('*** RESPONSE IS NOT NONE ***')
+        app.logger.debug('*** RESPONSE IS NOT NONE ***')
         character_media = response['data']['Staff']['characterMedia']
         all_series = character_media['edges']
 
         # Fetch additional pages if available
         while character_media['pageInfo']['hasNextPage']:
-            print('*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***')
+            app.logger.debug("*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***")
             variables['page'] += 1
+            app.logger.debug(f"*** PAGE {variables['page']} OF {character_media['pageInfo']['total']} ***")
             response = make_api_request(graphql_query, variables)
 
             #print(f'@@@@ REQUESTED PAGE {variables['page']} OF {character_media['pageInfo']['total']} @@@@')
 
             if response is not None:
 
-                print('*** RESPONSE WORKED, EXTEND all_series ***')
+                app.logger.debug('*** RESPONSE WORKED, EXTEND all_series ***')
                 character_media = response['data']['Staff']['characterMedia']
-                print('EXTENSION: ', character_media['edges'])
+                app.logger.debug('EXTENSION: ', character_media['edges'])
                 all_series.extend(character_media['edges'])
             else:
                 break
@@ -109,7 +109,7 @@ def fetch_all_character_media(va_id):
 
 
 
-def fetch_user_anime_list(username):
+def fetch_user_anime_list(username, app):
     """Fetch all completed / current by username"""
 
     # GraphQL query to fetch characterMedia by staff ID
@@ -132,21 +132,21 @@ def fetch_user_anime_list(username):
     }
 
     # Make the initial API request
-    response = make_api_request(graphql_query, variables)
+    response = make_api_request(graphql_query, variables, app)
 
     all_series = []
 
     if response is not None:
-        print('*** USER LIST RESPONSE IS NOT NONE ***')
+        app.logger.debug('*** USER LIST RESPONSE IS NOT NONE ***')
         lists = response['data']['MediaListCollection']['lists']
 
         # Combine all entries from all lists
         for lst in lists:
-            print(f"{lst['name']} Length: {len(lst['entries'])}")
+            app.logger.debug(f"{lst['name']} Length: {len(lst['entries'])}")
             for entry in lst['entries']:
                 all_series.append(entry['mediaId'])
 
-        print('ALL_SERIES: ', len(all_series))
+        app.logger.debug(f'ALL_SERIES: {len(all_series)}')
         # print('ENTRIES: ', len(lists[-1]['entries']))
 
     #print(all_series)

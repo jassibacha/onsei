@@ -90,7 +90,7 @@ def do_login(user):
     if not user.anime_list_updated_at or datetime.utcnow() - user.anime_list_updated_at > timedelta(days=LIST_EXPIRY):
         app.logger.debug("***** IT'S BEEN MORE THAN 7 DAYS. RE-FETCH LIST. *****")
         # Update anime list for user
-        user.anime_list = fetch_user_anime_list(user.anilist_username)
+        user.anime_list = fetch_user_anime_list(user.anilist_username, app)
         user.anime_list_updated_at = datetime.utcnow()
 
         # Commit the changes to the database
@@ -226,6 +226,30 @@ def profile_edit():
         flash("Wrong password, try again.", 'danger')
 
     return render_template('users/edit-profile.html', form=form, user_id=user.id)
+
+@app.route('/refresh-list', methods=['GET', 'POST'])
+def refresh_list():
+    """Refresh the anime list for the current user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get(g.user.id)
+
+    if not user.anilist_username:
+        flash("No AniList username found.", "danger")
+        return redirect("/profile")
+
+    # Update anime list for the user
+    user.anime_list = fetch_user_anime_list(user.anilist_username, app)
+    user.anime_list_updated_at = datetime.utcnow()
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    flash("Anime List successfully refreshed!", "success")
+    return redirect("/profile")
 
 @app.route('/profile/delete', methods=["POST"])
 def delete_user():
@@ -383,7 +407,7 @@ def va_details(va_id):
     }
 
     # Send the GraphQL query to the AniList API
-    response = make_api_request(va_query, variables)
+    response = make_api_request(va_query, variables, app)
 
     # Process the response
     if response is not None:
@@ -740,6 +764,31 @@ def va_details(va_id):
 # def login():
 #     # Implement your login logic here
 #     return render_template('login.html')
+
+
+# Register the time_since filter as a decorator
+@app.template_filter('time_since')
+def time_since(dt):
+    now = datetime.utcnow()
+    diff = now - dt
+
+    if diff.days > 365:
+        years = diff.days // 365
+        return f"{years} year{'s' if years > 1 else ''} ago"
+    elif diff.days > 30:
+        months = diff.days // 30
+        return f"{months} month{'s' if months > 1 else ''} ago"
+    elif diff.days > 0:
+        return f"{diff.days} day{'s' if diff.days > 1 else ''} ago"
+    elif diff.seconds > 3600:
+        hours = diff.seconds // 3600
+        return f"{hours} hour{'s' if hours > 1 else ''} ago"
+    elif diff.seconds > 60:
+        minutes = diff.seconds // 60
+        return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+    else:
+        return "Just now"
+
 
 # Add the following lines to create the application context and call db.create_all()
 with app.app_context():

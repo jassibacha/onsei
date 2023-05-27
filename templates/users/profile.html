@@ -7,6 +7,13 @@
             <p><strong>Username:</strong> {{user.username}}</p>
             <p><strong>Email:</strong> {{user.email}}</p>
             <p><strong>AniList Username:</strong> {{user.anilist_username}}</p>
+            <p>
+                <strong>List Last Updated:</strong>
+                {{ user.anime_list_updated_at | time_since }}
+                <a href="/refresh-list" class="btn btn-outline-primary ml-2"
+                    >Refresh List</a
+                >
+            </p>
 
             {% if g.user.id == user.id %}
             <a href="/profile/edit" class="btn btn-outline-secondary"
