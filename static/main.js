@@ -26,7 +26,7 @@ async function loadAndSortMedia(vaId) {
     try {
         const media = await getCharacterMedia(vaId);
         const sortedMedia = sortMediaBySeasonYear(media);
-        // Do something with sortedMedia
+        return sortedMedia;
     } catch (error) {
         console.error(error);
     }

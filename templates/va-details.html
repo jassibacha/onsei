@@ -69,8 +69,8 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
 {% endblock %} {% block extra_js %}
 <script>
     var vaId = $('body').data('va-id');
-
-    fetchCharacterMedia(vaId).then((charMedia) => {
+    console.log('Script is running, va id:', vaId);
+    getCharacterMedia(vaId).then((charMedia) => {
         // This code will be executed when the AJAX call completes.
         displayCharacterMedia(charMedia);
     });

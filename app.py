@@ -417,12 +417,12 @@ def va_details(va_id):
         app.logger.debug(va)
 
         # Fetch all characterMedia series for the VA
-        character_media = fetch_all_character_media(va_id, app)
+        # character_media = fetch_all_character_media(va_id, app)
 
         # Construct the output dictionary
         output = {
             'va': va,
-            'characterMedia': character_media
+            # 'characterMedia': character_media
         }
 
         return render_template('va-details.html', va_id=va_id, output=output)
