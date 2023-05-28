@@ -19,7 +19,15 @@
         <title>{% block title %}{% endblock%}</title>
     </head>
 
-    <body>
+    <body
+        class="{% block body_class %}{% endblock %}"
+        {%
+        block
+        body_data
+        %}{%
+        endblock
+        %}
+    >
         {% include "header.html" %}
 
         <main id="content" class="my-5">

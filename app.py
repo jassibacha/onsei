@@ -425,13 +425,17 @@ def va_details(va_id):
             'characterMedia': character_media
         }
 
-        return render_template('va-details.html', output=output)
+        return render_template('va-details.html', va_id=va_id, output=output)
 
     return render_template('va-details.html', va_id=va_id)
     
 
 
-    #    va = data['data']['Page']['staff'][0]
+@app.route('/api/character_media/<int:va_id>', methods=['GET'])
+def get_character_media(va_id):
+    """API Endpoint to fetch media + characters from a va's id and return json for front end"""
+    data = fetch_all_character_media(va_id, app)
+    return jsonify(data)
 
 
 # @app.route('/va/<int:va_id>', methods=['GET', 'POST'])
