@@ -48,6 +48,7 @@ def fetch_all_character_media(va_id, app):
                             medium
                             color
                         }
+                        averageScore
                         meanScore
                         popularity
                         trending

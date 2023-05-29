@@ -21,46 +21,17 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
         </p>
     </div>
 </div>
-<div class="row roles">
-    <h3>Roles:</h3>
-    {% for media in output.characterMedia %} {% if media.characters %}
-    <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="card card-role">
-            <div class="card-body">
-                {% if media.characters[0].image %}
-                <div class="img-wrap mb-3">
-                    <img
-                        src="{{ media.characters[0].image.large }}"
-                        alt="{{ media.characters[0].name.full }}"
-                        class="character-img img-fluid"
-                    />
-                    <img
-                        src="{{ media.node.coverImage.medium }}"
-                        alt="{{ media.node.title.romaji }}"
-                        class="series-img img-fluid"
-                    />
-                </div>
-                {% else %}
-                <p>No image available</p>
-                {% endif %} {% if media.characters[0].name %}
-                <h5 class="character">{{ media.characters[0].name.full }}</h5>
-                {% else %}
-                <h5 class="character">Unknown Character</h5>
-                {% endif %}
-                <div class="series">{{ media.node.title.romaji }}</div>
-                <p>Year: {{ media.node.seasonYear }}</p>
-                {#
-                <p>Mean Score: {{ media.node.meanScore }}</p>
-                <p>Popularity: {{ media.node.popularity }}</p>
-                #}
-                <!-- Display other media details as needed -->
-                AL Link:
-                <a href="https://anilist.co/anime/{{ media.node.id }}">Link</a>
-            </div>
-        </div>
+<div class="row">
+    <div class="col-sm-6"><h3>Roles:</h3></div>
+    <div class="col-sm-6">
+        <select id="sort-select">
+            <option value="seasonYear">Sort by season year</option>
+            <option value="popularity">Sort by popularity</option>
+            <option value="averageScore">Sort by average score</option>
+        </select>
     </div>
-    {% endif %} {% endfor %}
 </div>
+<div class="row roles"></div>
 <!-- Temporary section to display the full output string -->
 <div>
     <pre>{{ output }}</pre>
@@ -70,12 +41,25 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
 <script>
     var vaId = $('body').data('va-id');
     console.log('Script is running, va id:', vaId);
-    getCharacterMedia(vaId).then((charMedia) => {
-        // This code will be executed when the AJAX call completes.
-        // First, we sort the character media by season year.
-        let sortedCharMedia = sortMediaBySeasonYear(charMedia, 'desc');
-        // Then, we display the sorted media.
-        displayCharacterMedia(sortedCharMedia);
+
+    // Set empty charMedia
+    let charMedia;
+
+    getCharacterMedia(vaId).then((media) => {
+        charMedia = media;
+        let sortedMedia = sortMedia(charMedia, 'node.seasonYear', 'desc');
+        displayCharacterMedia(sortedMedia);
     });
+
+    document
+        .getElementById('sort-select')
+        .addEventListener('change', function () {
+            let sortBy = this.value;
+            let sortedMedia = sortMedia(charMedia, sortBy, 'desc');
+            // First clear the current display
+            $('.roles').empty();
+            // Then display the sorted media
+            displayCharacterMedia(sortedMedia);
+        });
 </script>
 {% endblock %}
