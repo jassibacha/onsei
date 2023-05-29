@@ -55,7 +55,8 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
         .getElementById('sort-select')
         .addEventListener('change', function () {
             let sortBy = this.value;
-            let sortedMedia = sortMedia(charMedia, sortBy, 'desc');
+            console.log('SORT BY: ', sortBy);
+            let sortedMedia = sortMedia(charMedia, 'node.' + sortBy, 'desc');
             // First clear the current display
             $('.roles').empty();
             // Then display the sorted media
