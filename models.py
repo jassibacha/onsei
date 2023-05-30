@@ -7,6 +7,7 @@ from sqlalchemy import PickleType
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from datetime import datetime
+import requests
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
