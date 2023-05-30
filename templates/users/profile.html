@@ -7,9 +7,16 @@
 
             <p><strong>Username:</strong> {{user.username}}</p>
             <p><strong>Email:</strong> {{user.email}}</p>
-            <p><strong>AniList Username:</strong> {{user.anilist_username}}</p>
+            <p>
+                <strong>AniList Username:</strong> {{user.anilist_username}} {%
+                if user.anilist_profile_accessible %}
+                <i class="fas fa-check-circle"></i>
+                {% else %}
+                <i class="fas fa-times-circle"></i>
+                {% endif %}
+            </p>
 
-            {% if user.anilist_username %}
+            {% if user.anilist_username and user.anilist_profile_accessible %}
             <p>
                 <strong>List Last Updated:</strong>
                 {{ user.anime_list_updated_at | time_since }}
