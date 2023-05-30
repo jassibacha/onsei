@@ -86,8 +86,9 @@ def do_login(user):
     app.logger.debug('CURRENT DATE/TIME: %s', datetime.utcnow())
     app.logger.debug('*****************************')
 
-    # Check if user's anime list needs to be updated
-    if not user.anime_list_updated_at or datetime.utcnow() - user.anime_list_updated_at > timedelta(days=LIST_EXPIRY):
+    # Check if profile is accessible (database field) and if the current list data is more than 7 days old
+    if user.anilist_profile_accessible and (not user.anime_list_updated_at or datetime.utcnow() - user.anime_list_updated_at > timedelta(days=LIST_EXPIRY)):
+    
         app.logger.debug("***** IT'S BEEN MORE THAN 7 DAYS. RE-FETCH LIST. *****")
         # Update anime list for user
         user.anime_list = fetch_user_anime_list(user.anilist_username, app)
@@ -217,7 +218,18 @@ def profile_edit():
             # Now we can update username if we want
             user.username = form.username.data
             user.email = form.email.data
-            user.anilist_username = form.anilist_username.data
+            # user.anilist_username = form.anilist_username.data
+
+            # Check if AniList username has been updated
+            if user.anilist_username != form.anilist_username.data:
+                # If it has, update it and check if it's public profile
+                user.update_anilist_username(form.anilist_username.data)
+            
+                # If profile is accessible, refresh the anime list
+                if user.anilist_profile_accessible:
+                    user.anime_list = fetch_user_anime_list(user.anilist_username, app)
+                    user.anime_list_updated_at = datetime.utcnow()
+            
 
             db.session.commit()
             flash("Profile edited successfully!", 'success')
@@ -239,6 +251,10 @@ def refresh_list():
 
     if not user.anilist_username:
         flash("No AniList username found.", "danger")
+        return redirect("/profile")
+
+    if not user.anilist_profile_accessible:
+        flash("AniList profile is not accessible.", "danger")
         return redirect("/profile")
 
     # Update anime list for the user

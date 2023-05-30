@@ -46,6 +46,7 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
     let charMedia;
 
     getCharacterMedia(vaId).then((media) => {
+        // Update charMedia with our API payload
         charMedia = media;
         let sortedMedia = sortMedia(charMedia, 'node.seasonYear', 'desc');
         displayCharacterMedia(sortedMedia);
@@ -55,7 +56,7 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
         .getElementById('sort-select')
         .addEventListener('change', function () {
             let sortBy = this.value;
-            console.log('SORT BY: ', sortBy);
+            //console.log('SORT BY: ', sortBy);
             let sortedMedia = sortMedia(charMedia, 'node.' + sortBy, 'desc');
             // First clear the current display
             $('.roles').empty();

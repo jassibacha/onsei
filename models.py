@@ -54,6 +54,7 @@ class User(db.Model):
         db.String(255),
         nullable=True
     )
+    anilist_profile_accessible = db.Column(db.Boolean, default=False)
 
     anime_list = db.Column(PickleType, nullable=True)
     anime_list_updated_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -109,6 +110,16 @@ class User(db.Model):
                 return user
 
         return False
+
+    def update_anilist_username(self, new_username):
+        """Update the AniList username and check if the profile is accessible."""
+        self.anilist_username = new_username
+
+        response = requests.get(f'https://anilist.co/user/{new_username}')
+        if response.status_code == 200:
+            self.anilist_profile_accessible = True
+        else:
+            self.anilist_profile_accessible = False
 
 
 
