@@ -117,9 +117,13 @@ class User(db.Model):
         self.anilist_username = new_username
 
         response = requests.get(f'https://anilist.co/user/{new_username}')
-        if response.status_code == 200:
+        print('***** RESPONSE CHECKING USERNAME *****')
+        print(response)
+        if response.status_code == 200 and response.url != 'https://anilist.co/404':
+            print('Setting profile to accessible')
             self.anilist_profile_accessible = True
         else:
+            print('Profile is not accessible')
             self.anilist_profile_accessible = False
 
 
