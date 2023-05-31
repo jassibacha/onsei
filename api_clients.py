@@ -136,6 +136,8 @@ def fetch_user_anime_list(username, app):
                 name
                 entries {
                     mediaId
+                    status
+                    score
                 }
             }
         }
@@ -153,7 +155,7 @@ def fetch_user_anime_list(username, app):
     all_series = []
 
     if response is not None:
-        app.logger.debug('*** USER LIST RESPONSE IS NOT NONE ***')
+        app.logger.debug('*** USER LIST RESPONSE: IS NOT NONE ***')
         lists = response['data']['MediaListCollection']['lists']
 
         # Combine all entries from all lists

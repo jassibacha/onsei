@@ -42,6 +42,16 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
     var vaId = $('body').data('va-id');
     console.log('Script is running, va id:', vaId);
 
+    let animeList = {{ output.anime_list|tojson|safe }};
+
+    if(animeList.length !== 0){
+        console.log('List length is not 0.')
+    }
+    else {
+        // Handle the case where animeList is empty
+        console.log('List length is 0.')
+    }
+
     // Set empty charMedia
     let charMedia;
 

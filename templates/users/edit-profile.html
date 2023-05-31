@@ -7,17 +7,29 @@ body_class %}edit-profile{% endblock %} {% block content %}
             <form method="POST" id="user_form">
                 {{ form.hidden_tag() }} {% for field in form if
                 field.widget.input_type != 'hidden' and field.name != 'password'
-                %} {% for error in field.errors %}
-                <span class="text-danger">{{ error }}</span>
-                {% endfor %} {{ field(placeholder=field.label.text,
-                class="form-control") }} {% endfor %}
+                %}
+                <div class="mb-3">
+                    <label for="{{ field.id }}" class="form-label"
+                        >{{ field.label.text }}</label
+                    >
+                    {% for error in field.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                    {% endfor %} {{ field(placeholder=field.label.text,
+                    class="form-control", id=field.id) }}
+                </div>
+                {% endfor %}
 
-                <p>To confirm changes, enter your password:</p>
-                {% if form.password.errors %} {% for error in
-                form.password.errors %}
-                <span class="text-danger"> {{ error }} </span>
-                {% endfor %} {% endif %} {{
-                form.password(placeholder="Password", class="form-control") }}
+                <div class="mb-3">
+                    <label class="form-label"
+                        >To confirm changes, enter your password:</label
+                    >
+                    {% if form.password.errors %} {% for error in
+                    form.password.errors %}
+                    <span class="text-danger"> {{ error }} </span>
+                    {% endfor %} {% endif %} {{
+                    form.password(placeholder="Password", class="form-control")
+                    }}
+                </div>
 
                 <div class="edit-btn-area">
                     <button class="btn btn-success">Edit Profile</button>

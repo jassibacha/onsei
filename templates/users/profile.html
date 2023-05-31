@@ -10,10 +10,16 @@
             <p>
                 <strong>AniList Username:</strong> {{user.anilist_username}} {%
                 if user.anilist_profile_accessible %}
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle" style="color: #198754"></i>
                 {% else %}
-                <i class="fas fa-times-circle"></i> The username does not exist
-                on AniList or the profile is private. {% endif %}
+                <i
+                    class="fas fa-times-circle"
+                    style="color: rgb(220, 53, 69)"
+                ></i>
+                <span class="text-danger"
+                    >Username does not exist or the profile is private.</span
+                >
+                {% endif %}
             </p>
 
             {% if user.anilist_username and user.anilist_profile_accessible %}
