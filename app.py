@@ -436,18 +436,17 @@ def va_details(va_id):
         # character_media = fetch_all_character_media(va_id, app)
 
 
-        # Check if user profile is accessible and fetch anime list
-        anime_list = g.user.anime_list if g.user and g.user.anilist_profile_accessible else []
-        
+        # Check if user profile is accessible and anime_list isn't empty, if so fetch anime list
+        anime_list = g.user.anime_list if g.user and g.user.anilist_profile_accessible and g.user.anime_list else None
+
         # Construct the output dictionary
         output = {
-            'va': va,
-            'anime_list': anime_list
-            # 'characterMedia': character_media
+            'va': va
         }
-    
 
-        ## WE NEED AN IF STATEMENT HERE TO SEE IF USER PROFILE IS ACCESSIBLE AND ANIME_LIST IS NOT EMPTY
+        # If anime_list isn't empty, then add it to output
+        if anime_list:
+            output['anime_list'] = anime_list
 
 
         return render_template('va-details.html', va_id=va_id, output=output)

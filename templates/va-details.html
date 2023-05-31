@@ -42,15 +42,8 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
     var vaId = $('body').data('va-id');
     console.log('Script is running, va id:', vaId);
 
+    // Pull user's anime list (can be empty)
     let animeList = {{ output.anime_list|tojson|safe }};
-
-    if(animeList.length !== 0){
-        console.log('List length is not 0.')
-    }
-    else {
-        // Handle the case where animeList is empty
-        console.log('List length is 0.')
-    }
 
     // Set empty charMedia
     let charMedia;
@@ -58,7 +51,37 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
     getCharacterMedia(vaId).then((media) => {
         // Update charMedia with our API payload
         charMedia = media;
-        let sortedMedia = sortMedia(charMedia, 'node.seasonYear', 'desc');
+
+        let sortedMedia;
+
+        if (!animeList || animeList.length === 0) {
+            console.log("No animeList provided or list is empty.");
+            sortedMedia = sortMedia(charMedia, 'node.seasonYear', 'desc');
+        } else {
+            console.log("User animeList not empty, add userdata to charMedia before sorting.");
+            // Add user's list data to charMedia
+            for (let media of charMedia) {
+                // If the media is in the users list, add the data!
+                let mediaId = media.node.id;
+                if (animeList[mediaId]) {
+                    media.node.userListStatus = animeList[mediaId].status;
+                    media.node.userListScore = animeList[mediaId].score;
+                    media.node.onUserList = true;
+                } else {
+                    // Media isn't in their list? False so we can filter easy!
+                    media.node.onUserList = false;
+                }
+            }
+
+            // Add sort options based on user data
+            $('#sort-select').append($('<option>', { value : 'userListScore' }).text('Sort by user score'));
+            //$('#sort-select').append($('<option>', { value : 'userListStatus' }).text('Sort by user status'));
+
+
+            sortedMedia = sortMedia(charMedia, 'node.userListScore', 'desc');
+        }
+
+        // Moved let sortedMedia to if statement above
         displayCharacterMedia(sortedMedia);
     });
 

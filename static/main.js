@@ -17,6 +17,7 @@ function getNestedAttr(obj, attr) {
 function sortMedia(media, attr, order = 'asc') {
     // Returns the sorted array. [...media] creates a new array that is a copy of media. This is to prevent modifying the original media array because the sort function sorts in place.
     return [...media].sort((a, b) => {
+        // Call parseFloat to convert values to a number
         let attrA = getNestedAttr(a, attr);
         let attrB = getNestedAttr(b, attr);
         if (order === 'asc') {
@@ -60,6 +61,14 @@ function createMediaCard(media) {
         characterName = `<h5 class="character">${character.name.full}</h5>`;
     }
 
+    // Do userListScore & userListStatus exist for this media?
+    let userListScore = media.node.userListScore
+        ? `<p>User Score: ${media.node.userListScore}</p>`
+        : '';
+    let userListStatus = media.node.userListStatus
+        ? `<p>User Status: ${media.node.userListStatus}</p>`
+        : '';
+
     // Constructing the card with the gathered information
     let html = `
         <div class="col-sm-6 col-md-4 col-lg-3">
@@ -74,6 +83,8 @@ function createMediaCard(media) {
                     <p>Year: ${media.node.seasonYear}</p>
                     <p>Score: ${media.node.averageScore}</p>
                     <p>Popularity: ${media.node.popularity}</p>
+                    ${userListScore}
+                    ${userListStatus}
                     AL Link: <a href="https://anilist.co/anime/${media.node.id}">Link</a>
                 </div>
             </div>

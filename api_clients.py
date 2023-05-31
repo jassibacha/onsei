@@ -152,7 +152,7 @@ def fetch_user_anime_list(username, app):
     # Make the initial API request
     response = make_api_request(graphql_query, variables, app)
 
-    all_series = []
+    all_series = {}
 
     if response is not None:
         app.logger.debug('*** USER LIST RESPONSE: IS NOT NONE ***')
@@ -162,7 +162,11 @@ def fetch_user_anime_list(username, app):
         for lst in lists:
             app.logger.debug(f"{lst['name']} Length: {len(lst['entries'])}")
             for entry in lst['entries']:
-                all_series.append(entry['mediaId'])
+                all_series[entry['mediaId']] = {
+                    'status': entry['status'],
+                    'score': entry['score']
+                }
+                #all_series.append(entry['mediaId'])
 
         app.logger.debug(f'ALL_SERIES: {len(all_series)}')
         # print('ENTRIES: ', len(lists[-1]['entries']))
