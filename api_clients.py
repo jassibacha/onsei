@@ -1,5 +1,6 @@
-import requests
-import json
+from flask import flash
+import requests, json
+
 
 def make_api_request(query, variables, app):
 
@@ -9,13 +10,27 @@ def make_api_request(query, variables, app):
     # Set the request headers
     anilist_api_headers = {'Content-Type': 'application/json'}
 
+    # log the request details
+    app.logger.debug(f"**************************************")
+    app.logger.debug(f"**************************************")
+    app.logger.debug(f"API request: {query}, {variables}")
+
     response = requests.post(anilist_api_url, json={'query': query, 'variables': variables}, headers=anilist_api_headers)
 
+    # log the response
+    app.logger.debug(f"API response: {response}")
+    app.logger.debug(f"**************************************")
+    app.logger.debug(f"**************************************")
+
     if response.status_code == 200:
-        return json.loads(response.text)
+        return response.json()
+    elif response.status_code == 404:
+        app.logger.debug('MAKE API REQUEST returned 404 status code: %s', response.status_code)
+        app.logger.debug('Response: %s', response.text)
+        return response.json()  # return the JSON response even though the status was 404
     else:
-        app.logger.debug('Request failed with status code:', response.status_code)
-        app.logger.debug('Response:', response.text)
+        app.logger.debug('MAKE API REQUEST Failed with status code: %s', response.status_code)
+        app.logger.debug('Response: %s', response.text)
         return None
 
 def fetch_all_character_media(va_id, app):
@@ -152,3 +167,33 @@ def fetch_user_anime_list(username, app):
 
     #print(all_series)
     return all_series
+
+def is_anilist_username_accessible(username, app):
+    """Check if the AniList username is accessible."""
+
+    # GraphQL query to fetch user profile by username
+    graphql_query = '''
+    query ($name: String) {
+        User(name: $name) {
+            id
+            name
+        }
+    }
+    '''
+
+    # Variables for the GraphQL query
+    variables = {
+        "name": username
+    }
+
+    # Make the initial API request
+    response = make_api_request(graphql_query, variables, app)
+
+    # Check if the request returned an error
+    if 'errors' in response and response['errors'][0]['status'] == 404:
+        app.logger.debug('The username does not exist on Anilist or the profile is private.')
+        #flash('The username does not exist on Anilist or the profile is private.', 'error')
+        return False
+
+    # If there was no error, the username is accessible
+    return True

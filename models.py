@@ -7,6 +7,8 @@ from sqlalchemy import PickleType
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from datetime import datetime
+from api_clients import is_anilist_username_accessible
+from flask import current_app
 import requests
 
 bcrypt = Bcrypt()
@@ -116,14 +118,10 @@ class User(db.Model):
         """Update the AniList username and check if the profile is accessible."""
         self.anilist_username = new_username
 
-        response = requests.get(f'https://anilist.co/user/{new_username}')
-        print('***** RESPONSE CHECKING USERNAME *****')
-        print(response)
-        if response.status_code == 200 and response.url != 'https://anilist.co/404':
-            print('Setting profile to accessible')
+        # Check if the AniList username is accessible
+        if is_anilist_username_accessible(new_username, current_app):
             self.anilist_profile_accessible = True
         else:
-            print('Profile is not accessible')
             self.anilist_profile_accessible = False
 
 

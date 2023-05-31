@@ -12,8 +12,8 @@
                 if user.anilist_profile_accessible %}
                 <i class="fas fa-check-circle"></i>
                 {% else %}
-                <i class="fas fa-times-circle"></i>
-                {% endif %}
+                <i class="fas fa-times-circle"></i> The username does not exist
+                on AniList or the profile is private. {% endif %}
             </p>
 
             {% if user.anilist_username and user.anilist_profile_accessible %}
