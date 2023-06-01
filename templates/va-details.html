@@ -16,8 +16,18 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
         <p>
             Gender: {{ output.va.gender }}<br />
             Age: {{ output.va.age }}<br />
-            Date of Birth: {{ output.va.dateOfBirth.day }}-{{
-            output.va.dateOfBirth.month}}-{{ output.va.dateOfBirth.year }}
+            Date of Birth: {{ output.va.dateOfBirth.day }} / {{
+            output.va.dateOfBirth.month}} / {{ output.va.dateOfBirth.year }}<br />
+            {% if output.va.dateOfDeath.year %} Date of Death: {{
+            output.va.dateOfDeath.day }} / {{ output.va.dateOfDeath.month }} /
+            {{ output.va.dateOfDeath.year }}<br />
+            {% endif %} {% if output.va.homeTown %} Hometown: {{
+            output.va.homeTown }}<br />{% endif %} {% if output.va.bloodType
+            %}Blood Type: {{ output.va.bloodType }}<br />{% endif %} {% if
+            output.va.yearsActive|length %} Years Active: {% if
+            output.va.yearsActive|length == 1 %} {{ output.va.yearsActive[0] }}
+            - Present {% else %} {{ output.va.yearsActive[0] }} - {{
+            output.va.yearsActive[1] }} {% endif %} {% endif %}
         </p>
     </div>
 </div>

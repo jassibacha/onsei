@@ -1,5 +1,12 @@
+@media (min-width: 1200px) and (max-width: 1399px) {
+  body.va-details .col-xl-2 {
+    flex: 0 0 auto;
+    width: 20%;
+  }
+}
 .roles .card-role .img-wrap {
   position: relative;
+  max-width: 200px;
 }
 .roles .card-role .img-wrap img.series-img {
   width: 40%;

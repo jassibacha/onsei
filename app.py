@@ -413,6 +413,9 @@ def va_details(va_id):
                 day
             }
             age
+            yearsActive
+            homeTown
+            bloodType
         }
     }
     '''

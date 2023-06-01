@@ -72,7 +72,7 @@ function createMediaCard(media) {
 
     // Constructing the card with the gathered information
     let html = `
-        <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
             <div class="card card-role">
                 <div class="card-body">
                     <div class="img-wrap mb-3">
