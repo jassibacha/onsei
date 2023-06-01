@@ -45,18 +45,19 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
     // Pull user's anime list (can be empty)
     let animeList = {{ output.anime_list|tojson|safe }};
 
-    // Set empty charMedia
-    let charMedia;
+    // Set empty charMedia & sortBy
+    let charMedia, sortBy;
 
     getCharacterMedia(vaId).then((media) => {
         // Update charMedia with our API payload
         charMedia = media;
 
-        let sortedMedia;
+        let filteredMedia;
 
         if (!animeList || animeList.length === 0) {
             console.log("No animeList provided or list is empty.");
-            sortedMedia = sortMedia(charMedia, 'node.seasonYear', 'desc');
+            filteredMedia = charMedia;
+            sortBy = 'node.seasonYear';
         } else {
             console.log("User animeList not empty, add userdata to charMedia before sorting.");
             // Add user's list data to charMedia
@@ -66,6 +67,7 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
                 if (animeList[mediaId]) {
                     media.node.userListStatus = animeList[mediaId].status;
                     media.node.userListScore = animeList[mediaId].score;
+                    media.node.userListSeasonYear = media.node.seasonYear;
                     media.node.onUserList = true;
                 } else {
                     // Media isn't in their list? False so we can filter easy!
@@ -74,14 +76,15 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
             }
 
             // Add sort options based on user data
-            $('#sort-select').append($('<option>', { value : 'userListScore' }).text('Sort by user score'));
-            //$('#sort-select').append($('<option>', { value : 'userListStatus' }).text('Sort by user status'));
+            $('#sort-select').append($('<option>', { value : 'userListScore' }).text('Sort by user list score'));
+            $('#sort-select').append($('<option>', { value : 'userListSeasonYear' }).text('Sort by user list season year'));
 
-
-            sortedMedia = sortMedia(charMedia, 'node.userListScore', 'desc');
+            sortBy = 'node.userListScore';
+            filteredMedia = charMedia.filter(media => media.node.onUserList);
+            $('#sort-select').val('userListScore');
         }
 
-        // Moved let sortedMedia to if statement above
+        let sortedMedia = sortMedia(filteredMedia, sortBy, 'desc');
         displayCharacterMedia(sortedMedia);
     });
 
@@ -92,13 +95,14 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
             //console.log('SORT BY: ', sortBy);
 
             let filteredMedia;
-            // If sorting by user list score, filter out media not on the user list
-            if (sortBy === 'userListScore') {
+            // If sorting by user list score or user list season year, filter out media not on the user list
+            if (sortBy === 'userListScore' || sortBy === 'userListSeasonYear') {
                 filteredMedia = charMedia.filter(media => media.node.onUserList);
             } else {
                 // Otherwise use the whole media list
                 filteredMedia = charMedia;
             }
+
             let sortedMedia = sortMedia(filteredMedia, 'node.' + sortBy, 'desc');
             // First clear the current display
             $('.roles').empty();

@@ -15,6 +15,7 @@ function getNestedAttr(obj, attr) {
 
 // Function to sort the media by a given attribute, in ascending or descending order
 function sortMedia(media, attr, order = 'asc') {
+    console.log('Sorting by:', attr, 'Order:', order);
     // Returns the sorted array. [...media] creates a new array that is a copy of media. This is to prevent modifying the original media array because the sort function sorts in place.
     return [...media].sort((a, b) => {
         // Call parseFloat to convert values to a number
