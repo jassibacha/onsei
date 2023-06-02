@@ -1,7 +1,12 @@
 // Grab the character media from our API endpoint
 async function getCharacterMedia(vaId) {
     try {
-        const response = await axios.get(`/api/character_media/${vaId}`);
+        const response = await axios.get(`/api/character_media/${vaId}`, {
+            headers: {
+                Authorization: 'Bearer wnYW3pY6b/pmAsNur?sbx=EOrTDKqslHIGjG',
+            },
+        });
+
         return response.data;
     } catch (error) {
         console.error(error);
