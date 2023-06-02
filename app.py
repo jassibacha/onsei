@@ -826,4 +826,5 @@ with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
+    # Use app.run() only when running locally
     app.run(debug=True)
