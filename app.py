@@ -16,12 +16,14 @@ CURR_USER_KEY = "curr_user"
 LIST_EXPIRY = 7
 
 app = Flask(__name__)
+load_dotenv()
+app.app_context().push()
 
 
 # db = SQLAlchemy()
 # migrate = Migrate(app, db)
 
-load_dotenv()
+
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
