@@ -10,11 +10,12 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from api_clients import *
 from datetime import datetime, timedelta
-from os import environ
 from dotenv import load_dotenv
 
-# CURR_USER_KEY = "curr_user"
-# LIST_EXPIRY = 7
+CURR_USER_KEY = "curr_user"
+LIST_EXPIRY = 7
+ANILIST_API_URL = 'https://graphql.anilist.co'
+ANILIST_API_HEADERS = {'Content-Type': 'application/json'}
 
 app = Flask(__name__)
 load_dotenv()
@@ -24,18 +25,14 @@ app.app_context().push()
 # 1. I tried making a Procfile
 # 2. I added app.app_context().push()
 
-# Use environment variable to decide which Config to use
+# Use ENV to decide which Config to use
 if app.config['ENV'] == 'production':
     app.config.from_object(ProductionConfig)
-else:
+elif app.config['ENV'] == 'development':
     app.config.from_object(DevelopmentConfig)
+# else:
+#     app.config.from_object(TestingConfig)
 
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_ECHO'] = True
-# app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-# app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 
 # Having the Debug Toolbar show redirects explicitly is often useful;
 # however, if you want to turn it off, you can uncomment this line:
