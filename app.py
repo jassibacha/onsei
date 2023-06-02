@@ -350,7 +350,7 @@ def va_search():
     }
 
     # Send the GraphQL query to the AniList API
-    response = requests.post(anilist_api_url, json={'query': graphql_query, 'variables': variables}, headers=anilist_api_headers)
+    response = requests.post(ANILIST_API_URL, json={'query': graphql_query, 'variables': variables}, headers=ANILIST_API_HEADERS)
 
     # Process the response
     if response.status_code == 200:
@@ -447,6 +447,7 @@ def va_details(va_id):
 def get_character_media(va_id):
     """API Endpoint to fetch media + characters from a va's id and return json for front end"""
     token = request.headers.get('Authorization')
+    # Not a secture token or anything since we're storing it in git and it's visible on the front end js calls, but it's something I guess.
     if not token or token != "Bearer wnYW3pY6b/pmAsNur?sbx=EOrTDKqslHIGjG":
         abort(403)
     data = fetch_all_character_media(va_id, app)
