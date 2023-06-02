@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 import requests
 import logging
 import json
+from config import Config, DevelopmentConfig, ProductionConfig
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, migrate, User
 from forms import SignUpForm, LoginForm, UserEditForm
@@ -12,23 +13,29 @@ from datetime import datetime, timedelta
 from os import environ
 from dotenv import load_dotenv
 
-CURR_USER_KEY = "curr_user"
-LIST_EXPIRY = 7
+# CURR_USER_KEY = "curr_user"
+# LIST_EXPIRY = 7
 
 app = Flask(__name__)
 load_dotenv()
 app.app_context().push()
 
+# Temp notes about render deploy attempts
+# 1. I tried making a Procfile
+# 2. I added app.app_context().push()
 
-# db = SQLAlchemy()
-# migrate = Migrate(app, db)
+# Use environment variable to decide which Config to use
+if app.config['ENV'] == 'production':
+    app.config.from_object(ProductionConfig)
+else:
+    app.config.from_object(DevelopmentConfig)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_ECHO'] = True
+# app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+# app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 
 # Having the Debug Toolbar show redirects explicitly is often useful;
 # however, if you want to turn it off, you can uncomment this line:
@@ -37,12 +44,10 @@ app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 
 debug = DebugToolbarExtension(app)
 
-# Enable debug
-app.debug = True
-
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
-app.logger.setLevel(logging.DEBUG)
+# If DEBUG = True, setup logging
+if app.debug:
+    logging.basicConfig(level=logging.DEBUG)
+    app.logger.setLevel(logging.DEBUG)
 
 # Call our connect_db function from models
 connect_db(app)
@@ -51,9 +56,9 @@ connect_db(app)
 migrate.init_app(app, db)
 
 # Set the GraphQL endpoint URL
-anilist_api_url = 'https://graphql.anilist.co'
+# anilist_api_url = 'https://graphql.anilist.co'
 # Set the request headers
-anilist_api_headers = {'Content-Type': 'application/json'}
+# anilist_api_headers = {'Content-Type': 'application/json'}
 
 # Obtain Access Token
 # token_url = ""
