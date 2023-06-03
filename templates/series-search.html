@@ -51,27 +51,6 @@ endblock %} {% block body_class %}series-search{% endblock %} {% block content
                     View Series
                 </a>
             </div>
-            {#
-            <div class="d-flex align-items-center">
-                <div class="cover">
-                    <img
-                        src="{{ s.coverImage.medium }}"
-                        alt="{{ s.title.english or s.title.romaji }} Poster"
-                        class="img-fluid"
-                    />
-                </div>
-                <div class="p-2 flex-grow-1">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            {{ s.title.english or s.title.romaji }}
-                        </h5>
-                        <a href="/series/{{ s.id }}" class="btn btn-primary">
-                            View Series
-                        </a>
-                    </div>
-                </div>
-            </div>
-            #}
         </div>
     </div>
     {% endfor %}

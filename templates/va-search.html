@@ -31,30 +31,45 @@ block body_class %}va-search{% endblock %} {% block content %}
 <div class="row mt-4">
     <div class="col">
         <h3>Search Results:</h3>
-        {% for voice_actor in va %}
-        <div class="card mb-3">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img
-                        src="{{ voice_actor.image.medium }}"
-                        alt="{{ voice_actor.name.full }}"
-                        class="img-fluid"
-                    />
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ voice_actor.name.full }}</h5>
-                        <a
-                            href="/va/{{ voice_actor.id }}"
-                            class="btn btn-primary"
-                        >
-                            View Voice Actor
-                        </a>
-                    </div>
+    </div>
+</div>
+<div class="row va">
+    {% for voice_actor in va %}
+    <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
+        <div class="card card-va flex-row mb-3">
+            <img
+                class="card-img-left card-img-poster"
+                src="{{ voice_actor.image.medium }}"
+                alt="{{ voice_actor.name.full }} Photo"
+            />
+            <div class="card-body">
+                <h5 class="card-title h4-sm">{{ voice_actor.name.full }}</h5>
+                <a href="/va/{{ voice_actor.id }}" class="btn btn-primary">
+                    View Voice Actor
+                </a>
+            </div>
+        </div>
+    </div>
+    {#
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img
+                    src="{{ voice_actor.image.medium }}"
+                    alt="{{ voice_actor.name.full }}"
+                    class="img-fluid"
+                />
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ voice_actor.name.full }}</h5>
+                    <a href="/va/{{ voice_actor.id }}" class="btn btn-primary">
+                        View Voice Actor
+                    </a>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+    #} {% endfor %}
 </div>
 {% endif %} {% endblock %}
