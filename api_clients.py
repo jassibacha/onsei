@@ -33,6 +33,86 @@ def make_api_request(query, variables, app):
         app.logger.debug('Response: %s', response.text)
         return None
 
+
+def search_series(search_query, app):
+    """Fetch all media based on search query"""
+
+    graphql_query = '''
+    query ($page: Int, $perPage: Int, $search: String) {
+        Page(page: $page, perPage: $perPage) {
+            pageInfo {
+                total
+                currentPage
+                lastPage
+                hasNextPage
+                perPage
+            }
+            media(search: $search, type: ANIME) {
+                id
+                idMal
+                title {
+                    romaji
+                    english
+                    native
+                }
+                seasonYear
+                season
+                averageScore
+                popularity
+                type
+                format
+                coverImage {
+                    extraLarge
+                    large
+                    medium
+                    color
+                }
+                description
+            }
+        }
+    }
+    '''
+
+    # Variables for the GraphQL query
+    variables = {
+        'search': search_query,
+        'page': 1,
+        'perPage': 50
+    }
+
+    # Make the initial API request
+    response = make_api_request(graphql_query, variables, app)
+
+    app.logger.debug(f'*** SEARCH SERIES: {search_query} ***')
+
+    if response is not None:
+        app.logger.debug('***** RESPONSE IS NOT NONE *****')
+        search_media = response['data']['Page']
+        all_media = search_media['media']
+
+        # Fetch additional pages if available
+        while search_media['pageInfo']['hasNextPage']:
+            app.logger.debug("*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***")
+            variables['page'] += 1
+            app.logger.debug(f"*** PAGE {variables['page']} OF {search_media['pageInfo']['total']} ***")
+            response = make_api_request(graphql_query, variables, app)
+
+            #print(f'@@@@ REQUESTED PAGE {variables['page']} OF {search_media['pageInfo']['total']} @@@@')
+
+            if response is not None:
+                app.logger.debug('*** RESPONSE WORKED, EXTEND all_media ***')
+                search_media = response['data']['Page']
+                #app.logger.debug('EXTENSION: ', search_media['media'])
+                all_media.extend(search_media['media'])
+            else:
+                break
+
+        #print('ALL SERIES FINAL: ', all_media)
+        return all_media
+
+    # Response is none, return empty
+    return []
+
 def fetch_all_character_media(va_id, app):
     """Fetch all characterMedia series for a VA based on ID."""
 
@@ -95,8 +175,11 @@ def fetch_all_character_media(va_id, app):
     # Make the initial API request
     response = make_api_request(graphql_query, variables, app)
 
+
+        app.logger.debug(f'*** FETCH ALL CHARACTER MEDIA: {va_id} ***')
+
     if response is not None:
-        app.logger.debug('*** RESPONSE IS NOT NONE ***')
+        app.logger.debug('***** RESPONSE IS NOT NONE *****')
         character_media = response['data']['Staff']['characterMedia']
         all_series = character_media['edges']
 
