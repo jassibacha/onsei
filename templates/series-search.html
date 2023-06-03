@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% block title %}Anime Series Search - Onsei{%
+endblock %} {% block body_class %}series-search{% endblock %} {% block content
+%}
+
+<div class="row">
+    <div class="col">
+        <h2>Search Series</h2>
+        <form action="/series/search" method="POST">
+            <div class="form-group">
+                <label for="series-search">Search:</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="series-search"
+                    name="series-search"
+                    placeholder="Enter a series name"
+                    {%
+                    if
+                    query
+                    %}
+                    value="{{query}}"
+                    {%
+                    endif
+                    %}
+                />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+{% if series %}
+<div class="row mt-4">
+    <div class="col">
+        <h3>Search Results:</h3>
+        {% for s in series %}
+
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img
+                        src="{{ s.coverImage.medium }}"
+                        alt="{{ s.title.english or s.title.romaji }} Poster"
+                        class="img-fluid"
+                    />
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ s.title.english or s.title.romaji }}
+                        </h5>
+                        <a href="/series/{{ s.id }}" class="btn btn-primary">
+                            View Series
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %} {% endblock %}

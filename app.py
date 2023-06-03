@@ -454,6 +454,34 @@ def get_character_media(va_id):
     return jsonify(data)
 
 
+@app.route('/series/search', methods=['GET', 'POST'])
+def series_search():
+    
+    query = request.form.get('series-search')
+    print('QUERY:', query)
+
+    if not query:
+        # Display the search page without making a GraphQL query
+        return render_template('series-search.html')
+
+    # Send the GraphQL query to the AniList API
+    response = search_anime_series(query, app)
+    data = response["data"]
+
+    app.logger.debug(f'*** SERIES SEARCH ROUTE. STATUS CODE: {data["status_code"]} ***')
+
+    # Process the response
+    if data['status_code'] == 200:
+        app.logger.debug('*** 200 CODE, RESPONSE IS GOOD ***')
+        series = data['series']
+        return render_template('series-search.html', series=series, query=query)
+    else:
+        app.logger.debug(f'*** Request failed with status code: {data["status_code"]} ***')
+
+
+    return render_template('series-search.html')
+
+
 
 # Register the time_since filter as a decorator
 @app.template_filter('time_since')

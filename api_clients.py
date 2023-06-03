@@ -34,7 +34,7 @@ def make_api_request(query, variables, app):
         return None
 
 
-def search_series(search_query, app):
+def search_anime_series(search_query, app):
     """Fetch all media based on search query"""
 
     graphql_query = '''
@@ -108,10 +108,23 @@ def search_series(search_query, app):
                 break
 
         #print('ALL SERIES FINAL: ', all_media)
-        return all_media
+        response_data = {
+            "data": {
+                "status_code": 200,
+                "series": all_media,
+            }
+        }
+        return response_data
 
-    # Response is none, return empty
-    return []
+    # If the response is None, return a dictionary with a status_code key
+    return {
+        "data": {
+            "status_code": response.status_code if response else 500,
+            "series": [],
+        }
+    }
+    # Response is none, return empty and 400 code
+    # return {"status_code": 404, "all_media": []}
 
 def fetch_all_character_media(va_id, app):
     """Fetch all characterMedia series for a VA based on ID."""
@@ -176,7 +189,7 @@ def fetch_all_character_media(va_id, app):
     response = make_api_request(graphql_query, variables, app)
 
 
-        app.logger.debug(f'*** FETCH ALL CHARACTER MEDIA: {va_id} ***')
+    app.logger.debug(f'*** FETCH ALL CHARACTER MEDIA: {va_id} ***')
 
     if response is not None:
         app.logger.debug('***** RESPONSE IS NOT NONE *****')
