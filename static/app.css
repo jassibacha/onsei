@@ -13,4 +13,18 @@
   position: absolute;
   right: 0;
   bottom: 0;
+}
+
+body.series-search .series .card-series .cover {
+  width: 100px !important;
+}
+
+.card-img-left {
+  width: auto;
+  height: 100%;
+  border-radius: calc(0.25rem - 1px) 0 0 calc(0.25rem - 1px);
+}
+
+.card-img-poster {
+  width: 100px;
 }/*# sourceMappingURL=app.css.map */

@@ -32,18 +32,35 @@ endblock %} {% block body_class %}series-search{% endblock %} {% block content
 <div class="row mt-4">
     <div class="col">
         <h3>Search Results:</h3>
-        {% for s in series %}
-
-        <div class="card mb-3">
-            <div class="row g-0">
-                <div class="col-md-4">
+    </div>
+</div>
+<div class="row series">
+    {% for s in series %}
+    <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
+        <div class="card card-series flex-row mb-3">
+            <img
+                class="card-img-left card-img-poster"
+                src="{{ s.coverImage.medium }}"
+                alt="{{ s.title.english or s.title.romaji }} Poster"
+            />
+            <div class="card-body">
+                <h5 class="card-title h4-sm">
+                    {{ s.title.english or s.title.romaji }}
+                </h5>
+                <a href="/series/{{ s.id }}" class="btn btn-primary">
+                    View Series
+                </a>
+            </div>
+            {#
+            <div class="d-flex align-items-center">
+                <div class="cover">
                     <img
                         src="{{ s.coverImage.medium }}"
                         alt="{{ s.title.english or s.title.romaji }} Poster"
                         class="img-fluid"
                     />
                 </div>
-                <div class="col-md-8">
+                <div class="p-2 flex-grow-1">
                     <div class="card-body">
                         <h5 class="card-title">
                             {{ s.title.english or s.title.romaji }}
@@ -54,8 +71,9 @@ endblock %} {% block body_class %}series-search{% endblock %} {% block content
                     </div>
                 </div>
             </div>
+            #}
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 </div>
 {% endif %} {% endblock %}
