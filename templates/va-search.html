@@ -44,32 +44,21 @@ block body_class %}va-search{% endblock %} {% block content %}
             />
             <div class="card-body">
                 <h5 class="card-title h4-sm">{{ voice_actor.name.full }}</h5>
+                <div>
+                    {% for character in voice_actor.characters.nodes[:5] %}
+                    <h6>Character: {{ character.name.full }}</h6>
+                    {% for media in character.media.nodes[:2] %} {{
+                    media.title.english or media.title.romaji }} {% endfor %} {%
+                    if character.media.nodes|length > 0 %} Media: {{
+                    character.media.nodes[0].title.english }} {% endif %} {%
+                    endfor %}
+                </div>
                 <a href="/va/{{ voice_actor.id }}" class="btn btn-primary">
                     View Voice Actor
                 </a>
             </div>
         </div>
     </div>
-    {#
-    <div class="card mb-3">
-        <div class="row g-0">
-            <div class="col-md-4">
-                <img
-                    src="{{ voice_actor.image.medium }}"
-                    alt="{{ voice_actor.name.full }}"
-                    class="img-fluid"
-                />
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h5 class="card-title">{{ voice_actor.name.full }}</h5>
-                    <a href="/va/{{ voice_actor.id }}" class="btn btn-primary">
-                        View Voice Actor
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    #} {% endfor %}
+    {% endfor %}
 </div>
 {% endif %} {% endblock %}

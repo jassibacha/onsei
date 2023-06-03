@@ -343,14 +343,58 @@ def va_search():
     }
     '''
 
+    graphql_query2 = '''
+    query GetVA($page: Int, $perPage: Int, $search: String) {
+		Page(page: $page, perPage: $perPage) {
+			pageInfo {
+				total
+				currentPage
+				lastPage
+				hasNextPage
+				perPage
+			}
+			staff(search: $search) {
+				id
+				name {
+					full
+				}
+                image {
+                    large
+                    medium
+                }
+				characters(page: 1, perPage: 5, sort:FAVOURITES_DESC) {
+					nodes {
+						id
+						name {
+							full
+						}
+						favourites
+						media(sort: FAVOURITES_DESC) {
+							nodes {
+								id
+								title {
+									english
+									romaji
+								}
+								type
+								favourites
+							}
+						}
+					}
+                }
+			}
+		}
+    }
+    '''
+
     variables = {
         'search': query,
         'page': 1,
-        #'perPage': 1
+        'perPage': 50
     }
 
     # Send the GraphQL query to the AniList API
-    response = requests.post(ANILIST_API_URL, json={'query': graphql_query, 'variables': variables}, headers=ANILIST_API_HEADERS)
+    response = requests.post(ANILIST_API_URL, json={'query': graphql_query2, 'variables': variables}, headers=ANILIST_API_HEADERS)
 
     # Process the response
     if response.status_code == 200:
