@@ -22,9 +22,9 @@ load_dotenv()
 app.app_context().push()
 
 # Temp notes about render deploy attempts
-# 1. I tried making a Procfile
+# 1. I tried making a Procfile  REMOVED
 # 2. I added app.app_context().push()
-# 3. Manually specified a version of setuptools instead of letting it install as a dependency
+# 3. Manually specified a version of setuptools instead of letting it install as a dependency REMOVED
 
 # Use ENV to decide which Config to use
 if app.config['ENV'] == 'production':
