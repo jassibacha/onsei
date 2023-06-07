@@ -21,6 +21,15 @@ app = Flask(__name__)
 load_dotenv()
 app.app_context().push()
 
+# Contect Processor Function: This function will be called every time a template is rendered.
+# The returned dictionary will be injected into the template's context, meaning its keys will become variables available in the template.
+@app.context_processor
+def inject_is_prod():
+    # We're adding the 'is_prod' variable, which is True if the app is running in production.
+    # This variable will be accessible in all templates, allowing us to conditionally add or remove things based on the environment.
+    return dict(is_prod=app.config['ENV'] == 'production')
+
+
 # Temp notes about render deploy attempts
 # 1. I tried making a Procfile  REMOVED
 # 2. I added app.app_context().push()
