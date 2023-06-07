@@ -525,6 +525,91 @@ def series_search():
 
     return render_template('series-search.html')
 
+@app.route('/series/<int:series_id>', methods=['GET', 'POST'])
+def series_details(series_id):
+    """Grab the series details by AniList ID"""
+
+    # Simplified query grabbing ONLY the seriesstaff info for the ID. No pagination needed. We're grabbing the series/character data in a separate call.
+    series_query = '''
+    query ($id: Int) {
+		Media(id: $id) {
+            title {
+                english
+                romaji
+            }
+            bannerImage
+            coverImage {
+                color
+                large
+            }
+            description
+            genres
+            episodes
+            idMal
+            id
+            season
+            seasonYear
+            studios {
+                edges {
+                    node {
+                        name
+                        id
+                    }
+                }
+            }
+            tags {
+                name
+                category
+                id
+            }
+        }
+    }
+    '''
+
+    # Variables, we literally only need ID here.
+    variables = {
+        'id': series_id,
+    }
+
+    # Send the GraphQL query to the AniList API
+    response = make_api_request(series_query, variables, app)
+
+    # Process the response
+    if response is not None:
+        series = response['data']['Media']
+
+        app.logger.debug('&&&&&&&&&&& RESPONSE FOR SERIES: &&&&&&&&&&&' )
+        app.logger.debug(series)
+
+        # Fetch all characterMedia series for the VA
+        # character_media = fetch_all_character_media(va_id, app)
+
+        # Check if user profile is accessible and anime_list isn't empty, if so fetch anime list
+        
+        # Construct the output dictionary
+        output = {
+            'series': series
+        }
+
+        # If anime_list isn't empty, then add it to output
+        # if anime_list:
+        #     output['anime_list'] = anime_list
+
+
+        return render_template('series-details.html', series_id=series_id, output=output)
+
+    return render_template('series-details.html', series_id=series_id)
+
+
+@app.route('/api/series_roles/<int:series_id>', methods=['GET'])
+def get_series_roles(series_id):
+    """API Endpoint to fetch characters & VA's from a series id and return json for front end"""
+    token = request.headers.get('Authorization')
+    # Not a secture token or anything since we're storing it in git and it's visible on the front end js calls, but it's something I guess.
+    if not token or token != "Bearer wnYW3pY6b/pmAsNur?sbx=EOrTDKqslHIGjG":
+        abort(403)
+    data = fetch_series_characters_roles(series_id, app)
+    return jsonify(data)
 
 
 # Register the time_since filter as a decorator

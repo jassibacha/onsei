@@ -1,0 +1,123 @@
+{% extends "base.html" %} {% block title %}{{ output.series.title.english or
+output.series.title.romaji }} Details{% endblock %} {% block body_class
+%}series-details{% endblock %} {% block body_data %}data-series-id="{{ series_id
+}}"{% endblock %} {% block content %}
+
+<div class="row">
+    <div class="col-sm-4 col-lg-3">
+        <img
+            src="{{ output.series.coverImage.large }}"
+            alt="{{ output.series.title.english or output.series.title.romaji }}"
+            class="img-fluid"
+        />
+    </div>
+    <div class="col-sm-8 col-lg-9">
+        <h1>{{ output.series.title.english or output.series.title.romaji }}</h1>
+
+        <p>{{ output.series.description }}</p>
+
+        <p>
+            Season: {{output.series.season}} {{output.series.seasonYear}}<br />
+            Genre: {% for genre in output.series.genres %} {{ genre }} {% if not
+            loop.last %}, {% endif %} {% endfor %}<br />
+            Studio: {{ output.series.studios.edges[0].node.name }}<br />
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6"><h3>Characters:</h3></div>
+    <div class="col-sm-6">
+        {#
+        <select id="sort-select">
+            <option value="seasonYear">Sort by season year</option>
+            <option value="popularity">Sort by popularity</option>
+            <option value="averageScore">Sort by average score</option>
+        </select>
+        #}
+    </div>
+</div>
+<div class="row characters"></div>
+<!-- Temporary section to display the full output string -->
+<div>
+    <pre>{{ output }}</pre>
+</div>
+
+{% endblock %} {% block extra_js %}
+<script>
+    var seriesId = $('body').data('series-id');
+    console.log('Script is running, series id:', seriesId);
+
+    // Pull user's anime list (can be empty)
+    let animeList;
+
+    // Set empty charMedia & sortBy
+    let seriesMedia, sortBy;
+
+    getSeriesRoles(seriesId).then((media) => {
+        // Update charMedia with our API payload
+        seriesMedia = media;
+
+        let filteredMedia;
+
+        displaySeriesRoles(seriesMedia);
+        /*
+        if (!animeList || animeList.length === 0) {
+            console.log('No animeList provided or list is empty.');
+            filteredMedia = seriesMedia;
+            //sortBy = 'node.seasonYear';
+        } else {
+            
+            console.log("User animeList not empty, add userdata to seriesMedia before sorting.");
+            // Add user's list data to seriesMedia
+            for (let media of seriesMedia) {
+                // If the media is in the users list, add the data!
+                let mediaId = media.node.id;
+                if (animeList[mediaId]) {
+                    media.node.userListStatus = animeList[mediaId].status;
+                    media.node.userListScore = animeList[mediaId].score;
+                    media.node.userListSeasonYear = media.node.seasonYear;
+                    media.node.onUserList = true;
+                } else {
+                    // Media isn't in their list? False so we can filter easy!
+                    media.node.onUserList = false;
+                }
+            }
+
+            // Add sort options based on user data
+            $('#sort-select').append($('<option>', { value : 'userListScore' }).text('Sort by user list score'));
+            $('#sort-select').append($('<option>', { value : 'userListSeasonYear' }).text('Sort by user list season year'));
+
+            sortBy = 'node.userListScore';
+            filteredMedia = seriesMedia.filter(media => media.node.onUserList);
+            $('#sort-select').val('userListScore');
+            
+        }
+*/
+        //let sortedMedia = sortMedia(filteredMedia, sortBy, 'desc');
+        //displaySeriesRoles(sortedMedia);
+    });
+    /*
+    document
+        .getElementById('sort-select')
+        .addEventListener('change', function () {
+            let sortBy = this.value;
+            //console.log('SORT BY: ', sortBy);
+
+            let filteredMedia;
+            // If sorting by user list score or user list season year, filter out media not on the user list
+            if (sortBy === 'userListScore' || sortBy === 'userListSeasonYear') {
+                filteredMedia = charMedia.filter(media => media.node.onUserList);
+            } else {
+                // Otherwise use the whole media list
+                filteredMedia = charMedia;
+            }
+
+            let sortedMedia = sortMedia(filteredMedia, 'node.' + sortBy, 'desc');
+            // First clear the current display
+            $('.roles').empty();
+            // Then display the sorted media
+            displayCharacterMedia(sortedMedia);
+        });
+        */
+</script>
+{% endblock %}

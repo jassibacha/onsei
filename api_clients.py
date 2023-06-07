@@ -33,99 +33,6 @@ def make_api_request(query, variables, app):
         app.logger.debug('Response: %s', response.text)
         return None
 
-
-def search_anime_series(search_query, app):
-    """Fetch all media based on search query"""
-
-    graphql_query = '''
-    query ($page: Int, $perPage: Int, $search: String) {
-        Page(page: $page, perPage: $perPage) {
-            pageInfo {
-                total
-                currentPage
-                lastPage
-                hasNextPage
-                perPage
-            }
-            media(search: $search, type: ANIME) {
-                id
-                idMal
-                title {
-                    romaji
-                    english
-                    native
-                }
-                seasonYear
-                season
-                averageScore
-                popularity
-                type
-                format
-                coverImage {
-                    extraLarge
-                    large
-                    medium
-                    color
-                }
-                description
-            }
-        }
-    }
-    '''
-
-    # Variables for the GraphQL query
-    variables = {
-        'search': search_query,
-        'page': 1,
-        'perPage': 50
-    }
-
-    # Make the initial API request
-    response = make_api_request(graphql_query, variables, app)
-
-    app.logger.debug(f'*** SEARCH SERIES: {search_query} ***')
-
-    if response is not None:
-        app.logger.debug('***** RESPONSE IS NOT NONE *****')
-        search_media = response['data']['Page']
-        all_media = search_media['media']
-
-        # Fetch additional pages if available
-        while search_media['pageInfo']['hasNextPage']:
-            app.logger.debug("*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***")
-            variables['page'] += 1
-            app.logger.debug(f"*** PAGE {variables['page']} OF {search_media['pageInfo']['total']} ***")
-            response = make_api_request(graphql_query, variables, app)
-
-            #print(f'@@@@ REQUESTED PAGE {variables['page']} OF {search_media['pageInfo']['total']} @@@@')
-
-            if response is not None:
-                app.logger.debug('*** RESPONSE WORKED, EXTEND all_media ***')
-                search_media = response['data']['Page']
-                #app.logger.debug('EXTENSION: ', search_media['media'])
-                all_media.extend(search_media['media'])
-            else:
-                break
-
-        #print('ALL SERIES FINAL: ', all_media)
-        response_data = {
-            "data": {
-                "status_code": 200,
-                "series": all_media,
-            }
-        }
-        return response_data
-
-    # If the response is None, return a dictionary with a status_code key
-    return {
-        "data": {
-            "status_code": response.status_code if response else 500,
-            "series": [],
-        }
-    }
-    # Response is none, return empty and 400 code
-    # return {"status_code": 404, "all_media": []}
-
 def fetch_all_character_media(va_id, app):
     """Fetch all characterMedia series for a VA based on ID."""
 
@@ -299,3 +206,197 @@ def is_anilist_username_accessible(username, app):
 
     # If there was no error, the username is accessible
     return True
+
+
+def search_anime_series(search_query, app):
+    """Fetch all media based on search query"""
+
+    graphql_query = '''
+    query ($page: Int, $perPage: Int, $search: String) {
+        Page(page: $page, perPage: $perPage) {
+            pageInfo {
+                total
+                currentPage
+                lastPage
+                hasNextPage
+                perPage
+            }
+            media(search: $search, type: ANIME) {
+                id
+                idMal
+                title {
+                    romaji
+                    english
+                    native
+                }
+                seasonYear
+                season
+                averageScore
+                popularity
+                type
+                format
+                coverImage {
+                    extraLarge
+                    large
+                    medium
+                    color
+                }
+                description
+            }
+        }
+    }
+    '''
+
+    # Variables for the GraphQL query
+    variables = {
+        'search': search_query,
+        'page': 1,
+        'perPage': 50
+    }
+
+    # Make the initial API request
+    response = make_api_request(graphql_query, variables, app)
+
+    app.logger.debug(f'*** SEARCH SERIES: {search_query} ***')
+
+    if response is not None:
+        app.logger.debug('***** RESPONSE IS NOT NONE *****')
+        search_media = response['data']['Page']
+        all_media = search_media['media']
+
+        # Fetch additional pages if available
+        while search_media['pageInfo']['hasNextPage']:
+            app.logger.debug("*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***")
+            variables['page'] += 1
+            app.logger.debug(f"*** PAGE {variables['page']} OF {search_media['pageInfo']['total']} ***")
+            response = make_api_request(graphql_query, variables, app)
+
+            #print(f'@@@@ REQUESTED PAGE {variables['page']} OF {search_media['pageInfo']['total']} @@@@')
+
+            if response is not None:
+                app.logger.debug('*** RESPONSE WORKED, EXTEND all_media ***')
+                search_media = response['data']['Page']
+                #app.logger.debug('EXTENSION: ', search_media['media'])
+                all_media.extend(search_media['media'])
+            else:
+                break
+
+        #print('ALL SERIES FINAL: ', all_media)
+        response_data = {
+            "data": {
+                "status_code": 200,
+                "series": all_media,
+            }
+        }
+        return response_data
+
+    # If the response is None, return a dictionary with a status_code key
+    return {
+        "data": {
+            "status_code": response.status_code if response else 500,
+            "series": [],
+        }
+    }
+    # Response is none, return empty and 400 code
+    # return {"status_code": 404, "all_media": []}
+
+
+def fetch_series_characters_roles(series_id, app):
+    """Fetch all characters and their VA's for a series based on ID."""
+
+    # GraphQL query to fetch characterMedia by staff ID
+    graphql_query = '''
+    query ($id: Int, $page: Int, $perPage: Int) {
+        Media(id: $id) {
+            characters (page: $page, perPage: $perPage, sort: FAVOURITES_DESC) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                }
+                edges {
+                    node {
+                        id
+                        name {
+                            full
+                        }
+                        image {
+                            large
+                            medium
+                        }
+                    }
+                    voiceActors (language: JAPANESE) {
+                        name {
+                            full
+                        }
+                        characters (page: 1, perPage: 5, sort:FAVOURITES_DESC) {
+                            nodes {
+                                name {
+                                    full
+                                }
+                                image {
+                                    large
+                                    medium
+                                }
+                                media {
+                                    edges {
+                                        node {
+                                            title {
+                                                english
+                                                romaji
+                                            }
+                                            type
+                                            favourites
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+		}
+    }
+    '''
+
+    # Variables for the GraphQL query
+    variables = {
+        'id': series_id,
+        'page': 1,
+        'perPage': 25
+    }
+
+    # Make the initial API request
+    response = make_api_request(graphql_query, variables, app)
+
+
+    app.logger.debug(f'*** FETCH ALL SERIES CHARACTERS: {series_id} ***')
+
+    if response is not None:
+        app.logger.debug('***** RESPONSE IS NOT NONE *****')
+        series_media = response['data']['Media']['characters']
+        all_series = series_media['edges']
+
+        # Fetch additional pages if available
+        while series_media['pageInfo']['hasNextPage']:
+            app.logger.debug("*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***")
+            variables['page'] += 1
+            app.logger.debug(f"*** PAGE {variables['page']} OF {series_media['pageInfo']['total']} ***")
+            response = make_api_request(graphql_query, variables, app)
+
+            #print(f'@@@@ REQUESTED PAGE {variables['page']} OF {series_media['pageInfo']['total']} @@@@')
+
+            if response is not None:
+
+                app.logger.debug('*** RESPONSE WORKED, EXTEND all_series ***')
+                series_media = response['data']['Media']['characters']
+                #app.logger.debug('EXTENSION: ', series_media['edges'])
+                all_series.extend(series_media['edges'])
+            else:
+                break
+
+        #print('ALL SERIES FINAL: ', all_series)
+        return all_series
+
+    return []
