@@ -19,6 +19,10 @@ body.series-search .series .card-series .cover {
   width: 100px !important;
 }
 
+body.series-details .characters .card-character img {
+  width: 50px;
+}
+
 .card-img-left {
   width: auto;
   height: 100%;

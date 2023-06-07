@@ -125,67 +125,41 @@ function displaySeriesRoles(seriesRoles) {
 
 // Function to display the 'Media Card'
 function createRoleCard(char) {
-    // We first store the character in a variable for readability.
-    //let character = char.characters[0];
+    let characterName = 'N/A';
+    let voiceActorName = 'N/A';
+    let characterImage = '/static/img/character-empty.jpg';
+    let voiceActorImage = '/static/img/va-empty.jpg';
 
-    let characterName = char.node.name.full;
-    let voiceActorName =
-        char.voiceActors.length > 0 ? char.voiceActors[0].name.full : 'N/A';
-
-    let html = `Name: ${characterName}, VA: ${voiceActorName}`;
-
-    return html;
-
-    /*
-    // Default values
-    let characterImg = '<p>No image available</p>';
-    let seriesImg = '';
-    let characterName = '<h5 class="character">Unknown Character</h5>';
-
-    // If character and character image exist, create character img tag
-    if (character && character.image) {
-        characterImg = `<img src="${character.image.large}" alt="${character.name.full}" class="character-img img-fluid" />`;
+    if (char.node) {
+        if (char.node.name && char.node.name.full) {
+            characterName = char.node.name.full;
+        }
+        if (char.node.image && char.node.image.medium) {
+            characterImage = char.node.image.medium;
+        }
     }
 
-    // If cover image exists, create series img tag
-    if (media.node.coverImage) {
-        seriesImg = `<img src="${media.node.coverImage.medium}" alt="${media.node.title.romaji}" class="series-img img-fluid" />`;
+    if (char.voiceActors && char.voiceActors.length > 0) {
+        if (char.voiceActors[0].name && char.voiceActors[0].name.full) {
+            voiceActorName = char.voiceActors[0].name.full;
+        }
+        if (char.voiceActors[0].image && char.voiceActors[0].image.medium) {
+            voiceActorImage = char.voiceActors[0].image.medium;
+        }
     }
 
-    // If character and character name exist, create h5 tag
-    if (character && character.name) {
-        characterName = `<h5 class="character">${character.name.full}</h5>`;
-    }
-
-    // Do userListScore & userListStatus exist for this media?
-    let userListScore = media.node.userListScore
-        ? `<p>User Score: ${media.node.userListScore}</p>`
-        : '';
-    let userListStatus = media.node.userListStatus
-        ? `<p>User Status: ${media.node.userListStatus}</p>`
-        : '';
-
-    // Constructing the card with the gathered information
     let html = `
-        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
-            <div class="card card-role">
+        <div class="col-sm-6 col-lg-4">
+            <div class="card card-character">
                 <div class="card-body">
-                    <div class="img-wrap mb-3">
-                        ${characterImg}
-                        ${seriesImg}
-                    </div>
+                    <img src="${characterImage}" class="" alt="${characterName}" />
                     ${characterName}
-                    <div class="series">${media.node.title.romaji}</div>
-                    <p>Year: ${media.node.seasonYear}</p>
-                    <p>Score: ${media.node.averageScore}</p>
-                    <p>Popularity: ${media.node.popularity}</p>
-                    ${userListScore}
-                    ${userListStatus}
-                    AL Link: <a href="https://anilist.co/anime/${media.node.id}">Link</a>
+                    <img src="${voiceActorImage}" class="" alt="${voiceActorName}" />
+                    ${voiceActorName}
                 </div>
             </div>
         </div>`;
-    return html; */
+    return html;
 }
 
 // // DEPRECATED: Load and sort the media

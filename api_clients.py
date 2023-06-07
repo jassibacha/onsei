@@ -330,11 +330,17 @@ def fetch_series_characters_roles(series_id, app):
                         name {
                             full
                         }
+                        id
+                        image {
+                            large
+                            medium
+                        }
                         characters (page: 1, perPage: 5, sort:FAVOURITES_DESC) {
                             nodes {
                                 name {
                                     full
                                 }
+                                id
                                 image {
                                     large
                                     medium
@@ -342,6 +348,7 @@ def fetch_series_characters_roles(series_id, app):
                                 media {
                                     edges {
                                         node {
+                                            id
                                             title {
                                                 english
                                                 romaji
