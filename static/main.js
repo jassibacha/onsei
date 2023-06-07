@@ -139,6 +139,8 @@ function createRoleCard(char) {
         }
     }
 
+    let va = char.voiceActors[0];
+
     if (char.voiceActors && char.voiceActors.length > 0) {
         if (char.voiceActors[0].name && char.voiceActors[0].name.full) {
             voiceActorName = char.voiceActors[0].name.full;
@@ -151,11 +153,17 @@ function createRoleCard(char) {
     let html = `
         <div class="col-sm-6 col-lg-4">
             <div class="card card-character">
-                <div class="card-body">
-                    <img src="${characterImage}" class="" alt="${characterName}" />
-                    ${characterName}
-                    <img src="${voiceActorImage}" class="" alt="${voiceActorName}" />
-                    ${voiceActorName}
+                <div class="card-body row">
+                    <div class="col-6">
+                        <img src="${characterImage}" class="" alt="${characterName}" />
+                        ${characterName}
+                    </div>
+                    <div class="col-6">
+                    <a href="/va/${va.id}">
+                        <img src="${voiceActorImage}" class="" alt="${voiceActorName}" />
+                        ${voiceActorName}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>`;
