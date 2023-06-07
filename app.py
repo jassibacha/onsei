@@ -24,6 +24,7 @@ app.app_context().push()
 # Temp notes about render deploy attempts
 # 1. I tried making a Procfile
 # 2. I added app.app_context().push()
+# 3. Manually specified a version of setuptools instead of letting it install as a dependency
 
 # Use ENV to decide which Config to use
 if app.config['ENV'] == 'production':
@@ -473,12 +474,13 @@ def va_details(va_id):
 
         # Construct the output dictionary
         output = {
-            'va': va
+            'va': va,
+            'anime_list': anime_list if anime_list else [] # Empty list if anime_list not avail
         }
 
         # If anime_list isn't empty, then add it to output
-        if anime_list:
-            output['anime_list'] = anime_list
+        # if anime_list:
+        #     output['anime_list'] = anime_list
 
 
         return render_template('va-details.html', va_id=va_id, output=output)

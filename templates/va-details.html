@@ -53,7 +53,11 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
     console.log('Script is running, va id:', vaId);
 
     // Pull user's anime list (can be empty)
-    let animeList = {{ output.anime_list|tojson|safe }};
+    {% if output.anime_list is defined %}
+        let animeList = {{ output.anime_list|tojson|safe }};
+    {% else %}
+        let animeList = [];
+    {% endif %}
 
     // Set empty charMedia & sortBy
     let charMedia, sortBy;
