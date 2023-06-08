@@ -1,64 +1,74 @@
 {% extends "base.html" %} {% block title %}VA Search - Onsei{% endblock %} {%
 block body_class %}va-search{% endblock %} {% block content %}
-
-<div class="row">
-    <div class="col">
-        <h2>Select Voice Actor</h2>
-        <form action="/va/search" method="POST">
-            <div class="form-group">
-                <label for="va-search">Search:</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="va-search"
-                    name="va-search"
-                    placeholder="Enter a voice actor's name"
-                    {%
-                    if
-                    query
-                    %}
-                    value="{{query}}"
-                    {%
-                    endif
-                    %}
-                />
-            </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-    </div>
-</div>
-{% if va %}
-<div class="row mt-4">
-    <div class="col">
-        <h3>Search Results:</h3>
-    </div>
-</div>
-<div class="row va">
-    {% for voice_actor in va %}
-    <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
-        <div class="card card-va flex-row mb-3">
-            <img
-                class="card-img-left card-img-poster"
-                src="{{ voice_actor.image.medium }}"
-                alt="{{ voice_actor.name.full }} Photo"
-            />
-            <div class="card-body">
-                <h5 class="card-title h4-sm">{{ voice_actor.name.full }}</h5>
-                <div>
-                    {% for character in voice_actor.characters.nodes[:5] %}
-                    <h6>Character: {{ character.name.full }}</h6>
-                    {% for media in character.media.nodes[:1] %} {{
-                    media.title.english or media.title.romaji }} {% endfor %} {%
-                    if character.media.nodes|length > 0 %} Media: {{
-                    character.media.nodes[0].title.english }} {% endif %} {%
-                    endfor %}
-                </div>
-                <a href="/va/{{ voice_actor.id }}" class="btn btn-primary">
-                    View Voice Actor
-                </a>
+<div class="hero">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Select Voice Actor</h2>
+                <form action="/va/search" method="POST">
+                    <div class="form-group">
+                        <label for="va-search">Search:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="va-search"
+                            name="va-search"
+                            placeholder="Enter a voice actor's name"
+                            {%
+                            if
+                            query
+                            %}
+                            value="{{query}}"
+                            {%
+                            endif
+                            %}
+                        />
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </form>
             </div>
         </div>
     </div>
-    {% endfor %}
+</div>
+
+{% if va %}
+<div class="container">
+    <div class="row mt-4">
+        <div class="col">
+            <h3>Search Results:</h3>
+        </div>
+    </div>
+    <div class="row va">
+        {% for voice_actor in va %}
+        <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
+            <div class="card card-va flex-row mb-3">
+                <img
+                    class="card-img-left card-img-poster"
+                    src="{{ voice_actor.image.medium }}"
+                    alt="{{ voice_actor.name.full }} Photo"
+                />
+                <div class="card-body">
+                    <h5 class="card-title h4-sm">
+                        {{ voice_actor.name.full }}
+                    </h5>
+                    <div>
+                        {% for character in voice_actor.characters.nodes[:5] %}
+                        <h6>Character: {{ character.name.full }}</h6>
+                        {% for media in character.media.nodes[:1] %} {{
+                        media.title.english or media.title.romaji }} {% endfor
+                        %} {% if character.media.nodes|length > 0 %} Media: {{
+                        character.media.nodes[0].title.english }} {% endif %} {%
+                        endfor %}
+                    </div>
+                    <a href="/va/{{ voice_actor.id }}" class="btn btn-primary">
+                        View Voice Actor
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endif %} {% endblock %}

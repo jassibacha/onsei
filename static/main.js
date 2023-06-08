@@ -172,7 +172,9 @@ function createRoleCard(char) {
                 <div class="character w-20">
                     <div class="img-wrap d-flex align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
                         <img src="${character.image.medium}" alt="${character.name.full}" class="img-fluid" />
-                        <div class="overlay px-2">${character.name.full}</div>
+                        <div class="overlay px-2">
+                        ${character.name.full}
+                        </div>
                     </div>
                 </div>`;
             });
@@ -183,7 +185,7 @@ function createRoleCard(char) {
     let html = `
         <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
             <div class="card card-character">
-                <div class="d-flex flex-row">
+                <div class="card-top d-flex flex-row">
                     <div class="col-6 left">
                         <img src="${characterImage}" class="char-img" alt="${characterName}" />
                         <span class="character-text ps-2 pe-1">${characterName}</span>
@@ -196,6 +198,7 @@ function createRoleCard(char) {
                     </div>
                 </div>
                 <div class="popular-roles">
+                    <div class="title">Popular Roles:</div>
                     <div class="d-flex flex-row">
                     ${voiceActorCharacters}
                     </div>

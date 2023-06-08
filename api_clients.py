@@ -227,7 +227,6 @@ def search_anime_series(search_query, app):
                 title {
                     romaji
                     english
-                    native
                 }
                 seasonYear
                 season
