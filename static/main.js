@@ -124,6 +124,13 @@ function displaySeriesRoles(seriesRoles) {
         let html = createRoleCard(char);
         $('.characters').append(html);
     }
+
+    const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+    );
+    const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
 }
 
 // Function to display the 'Media Card'
@@ -132,6 +139,8 @@ function createRoleCard(char) {
     let voiceActorName = 'N/A';
     let characterImage = '/static/img/character-empty.jpg';
     let voiceActorImage = '/static/img/va-empty.jpg';
+    let voiceActorId = 'N/A';
+    let voiceActorCharacters = '';
 
     if (char.node) {
         if (char.node.name && char.node.name.full) {
@@ -142,8 +151,6 @@ function createRoleCard(char) {
         }
     }
 
-    let va = char.voiceActors[0];
-
     if (char.voiceActors && char.voiceActors.length > 0) {
         if (char.voiceActors[0].name && char.voiceActors[0].name.full) {
             voiceActorName = char.voiceActors[0].name.full;
@@ -151,21 +158,45 @@ function createRoleCard(char) {
         if (char.voiceActors[0].image && char.voiceActors[0].image.medium) {
             voiceActorImage = char.voiceActors[0].image.medium;
         }
+        voiceActorId = char.voiceActors[0].id;
+
+        // Check if voice actor has characters
+        if (
+            char.voiceActors[0].characters &&
+            char.voiceActors[0].characters.nodes
+        ) {
+            // Iterate over characters
+            char.voiceActors[0].characters.nodes.forEach((character) => {
+                voiceActorCharacters += `
+                <div class="character w-20">
+                    <div class="img-wrap d-flex align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
+                        <img src="${character.image.medium}" alt="${character.name.full}" class="img-fluid" />
+                        <div class="overlay px-2">${character.name.full}</div>
+                    </div>
+                </div>`;
+            });
+        }
     }
 
+    // <div class="col-sm-6 col-lg-4 mb-3">
     let html = `
-        <div class="col-sm-6 col-lg-4">
+        <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
             <div class="card card-character">
-                <div class="card-body row">
-                    <div class="col-6">
-                        <img src="${characterImage}" class="" alt="${characterName}" />
-                        ${characterName}
+                <div class="d-flex flex-row">
+                    <div class="col-6 left">
+                        <img src="${characterImage}" class="char-img" alt="${characterName}" />
+                        <span class="character-text ps-2 pe-1">${characterName}</span>
                     </div>
-                    <div class="col-6">
-                    <a href="/va/${va.id}">
-                        <img src="${voiceActorImage}" class="" alt="${voiceActorName}" />
-                        ${voiceActorName}
+                    <div class="col-6 right">
+                        <a href="/va/${voiceActorId}" class="justify-content-end text-end">
+                            <span class="character-text text-end ps-1 pe-2">${voiceActorName}</span>
+                            <img src="${voiceActorImage}" class="va-img" alt="${voiceActorName}" />
                         </a>
+                    </div>
+                </div>
+                <div class="popular-roles">
+                    <div class="d-flex flex-row">
+                    ${voiceActorCharacters}
                     </div>
                 </div>
             </div>

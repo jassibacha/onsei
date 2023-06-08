@@ -72,29 +72,86 @@ body.series-details {
             z-index: 2;
             position: inherit;
         }
-        .description .morecontent span {
-            display: none;
-        }
+        .description {
+            .morecontent {
+                margin: 0;
+                padding: 0;
 
-        .description .morecontent .read-more {
-            display: inline;
-            color: blue;
-            cursor: pointer;
-        }
+                span {
+                    display: none;
+                }
 
-        .description .moreellipses {
-            display: inline;
-        }
+                .read-more {
+                    display: inline;
+                    color: blue;
+                    cursor: pointer;
+                }
+            }
 
-        .description .morecontent {
-            margin: 0;
-            padding: 0;
+            .moreellipses {
+                display: inline;
+            }
         }
     }
     .characters {
         .card-character {
-            img {
+            img.char-img,
+            img.va-img {
                 width: 50px;
+            }
+            .character-text {
+                word-wrap: break-word;
+            }
+            .left,
+            .right a {
+                display: flex;
+                align-items: center;
+                flex-wrap: nowrap;
+                word-wrap: break-word;
+            }
+            .left {
+                img {
+                    border-radius: calc(0.25rem - 1px) 0 0 calc(0.25rem - 1px);
+                }
+            }
+            .right {
+                img {
+                    border-radius: 0 calc(0.25rem - 1px) calc(0.25rem - 1px) 0;
+                }
+            }
+            .popular-roles {
+                .character {
+                    .img-wrap {
+                        position: relative;
+                        aspect-ratio: 3 / 4;
+                        overflow: hidden;
+                        width: auto;
+                        height: 100%;
+                        .overlay {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba(0, 0, 0, 0.6);
+                            color: #fff;
+                            display: flex;
+                            align-items: center;
+                            text-align: center;
+                            justify-content: center;
+                            opacity: 0;
+                            transition: opacity 0.3s;
+                        }
+                        &:hover {
+                            .overlay {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+                img {
+                    // width:20%;
+                }
             }
         }
     }

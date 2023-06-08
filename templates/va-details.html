@@ -3,17 +3,17 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block
 content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
 }}"{% endblock %} {% block content %}
 
-<div class="hero mb-3">
+<div class="hero py-5 mb-3">
     <div class="container">
         <div class="row">
-            <div class="col-sm-4 col-lg-3">
+            <div class="col-sm-4 col-lg-2 offset-lg-2">
                 <img
                     src="{{ output.va.image.large }}"
                     alt="{{ output.va.name.full }}"
                     class="img-fluid"
                 />
             </div>
-            <div class="col-sm-8 col-lg-9">
+            <div class="col-sm-8 col-lg-6">
                 <h1>{{ output.va.name.full }}</h1>
 
                 <p>

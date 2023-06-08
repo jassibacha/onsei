@@ -72,17 +72,24 @@ content %}
         var ellipsestext = '...';
         var moretext = 'Read more';
         var lesstext = 'Read less';
+
         $('.description').each(function () {
+            // Get the full text content of the current element
             var content = $(this).html();
+            // Remove any leading/trailing white spaces
             var description = content.trim();
 
+            // If the length of the text is more than the defined showChar
             if (description.length > showChar) {
+                // Extract the portion of the text up to the showChar limit
                 var shownDesc = description.substr(0, showChar);
+                // Extract the remainder of the text
                 var hiddenDesc = description.substr(
                     showChar,
                     description.length - showChar
                 );
 
+                // Construct the HTML to show initially and the hidden part
                 var html =
                     shownDesc +
                     '<span class="moreellipses">' +
@@ -93,10 +100,13 @@ content %}
                     moretext +
                     '</a></span>';
 
+                // Replace the current html content with the constructed html
                 $(this).html(html);
             }
 
+            // When 'read more' or 'read less' is clicked do the following
             $('.morelink').click(function () {
+                // If it currently shows 'read less'
                 if ($(this).hasClass('less')) {
                     $(this).removeClass('less');
                     $(this).html(moretext);
@@ -105,9 +115,12 @@ content %}
                     $(this).html(lesstext);
                 }
 
+                // Toggle visibility of the text beyond the showChar limit
                 $(this).parent().prev().toggle();
+                // Toggle visibility of the ellipsis
                 $(this).prev().toggle();
 
+                // Prevent any default action from the click event
                 return false;
             });
         });
