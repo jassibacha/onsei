@@ -1,47 +1,64 @@
 {% extends "base.html" %} {% block title %}{{ output.va.name.full }} Details{%
-endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
-%}data-va-id="{{ va_id }}"{% endblock %} {% block content %}
+endblock %} {% block body_class %}va-details{% endblock %} {% block
+content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
+}}"{% endblock %} {% block content %}
 
-<div class="row">
-    <div class="col-sm-4 col-lg-3">
-        <img
-            src="{{ output.va.image.large }}"
-            alt="{{ output.va.name.full }}"
-            class="img-fluid"
-        />
-    </div>
-    <div class="col-sm-8 col-lg-9">
-        <h1>{{ output.va.name.full }}</h1>
+<div class="hero mb-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-lg-3">
+                <img
+                    src="{{ output.va.image.large }}"
+                    alt="{{ output.va.name.full }}"
+                    class="img-fluid"
+                />
+            </div>
+            <div class="col-sm-8 col-lg-9">
+                <h1>{{ output.va.name.full }}</h1>
 
-        <p>
-            Gender: {{ output.va.gender }}<br />
-            Age: {{ output.va.age }}<br />
-            Date of Birth: {{ output.va.dateOfBirth.day }} / {{
-            output.va.dateOfBirth.month}} / {{ output.va.dateOfBirth.year }}<br />
-            {% if output.va.dateOfDeath.year %} Date of Death: {{
-            output.va.dateOfDeath.day }} / {{ output.va.dateOfDeath.month }} /
-            {{ output.va.dateOfDeath.year }}<br />
-            {% endif %} {% if output.va.homeTown %} Hometown: {{
-            output.va.homeTown }}<br />{% endif %} {% if output.va.bloodType
-            %}Blood Type: {{ output.va.bloodType }}<br />{% endif %} {% if
-            output.va.yearsActive|length %} Years Active: {% if
-            output.va.yearsActive|length == 1 %} {{ output.va.yearsActive[0] }}
-            - Present {% else %} {{ output.va.yearsActive[0] }} - {{
-            output.va.yearsActive[1] }} {% endif %} {% endif %}
-        </p>
+                <p>
+                    Gender: {{ output.va.gender }}<br />
+                    Age: {{ output.va.age }}<br />
+                    Date of Birth: {{ output.va.dateOfBirth.day }} / {{
+                    output.va.dateOfBirth.month}} / {{
+                    output.va.dateOfBirth.year }}<br />
+                    {% if output.va.dateOfDeath.year %} Date of Death: {{
+                    output.va.dateOfDeath.day }} / {{
+                    output.va.dateOfDeath.month }} / {{
+                    output.va.dateOfDeath.year }}<br />
+                    {% endif %} {% if output.va.homeTown %} Hometown: {{
+                    output.va.homeTown }}<br />{% endif %} {% if
+                    output.va.bloodType %}Blood Type: {{ output.va.bloodType
+                    }}<br />{% endif %} {% if output.va.yearsActive|length %}
+                    Years Active: {% if output.va.yearsActive|length == 1 %} {{
+                    output.va.yearsActive[0] }} - Present {% else %} {{
+                    output.va.yearsActive[0] }} - {{ output.va.yearsActive[1] }}
+                    {% endif %} {% endif %}
+                </p>
+            </div>
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-6"><h3>Roles:</h3></div>
-    <div class="col-sm-6">
-        <select id="sort-select">
-            <option value="seasonYear">Sort by season year</option>
-            <option value="popularity">Sort by popularity</option>
-            <option value="averageScore">Sort by average score</option>
-        </select>
+<div class="container">
+    <div class="row d-flex align-items-end mb-3">
+        <div class="col-sm-4"><h3 class="mb-0">Roles:</h3></div>
+        <div class="col-sm-8 text-sm-end">
+            <div class="sort-msg">Test text</div>
+            <select id="sort-select">
+                <option value="seasonYear">Sort by season year</option>
+                <option value="popularity">Sort by popularity</option>
+                <option value="averageScore">Sort by average score</option>
+            </select>
+            <a
+                class="tooltip-toggle"
+                data-bs-toggle="tooltip"
+                data-bs-title="Use the dropdown to swap between sort methods, if you've added an anilist account then you can filter and sort by only your completed or current series."
+                ><i class="fas fa-question-circle"></i
+            ></a>
+        </div>
     </div>
+    <div class="row roles"></div>
 </div>
-<div class="row roles"></div>
 <!-- Temporary section to display the full output string -->
 <div>
     <pre>{{ output }}</pre>
@@ -49,6 +66,9 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
 
 {% endblock %} {% block extra_js %}
 <script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
     var vaId = $('body').data('va-id');
     console.log('Script is running, va id:', vaId);
 
@@ -96,6 +116,8 @@ endblock %} {% block body_class %}va-details{% endblock %} {% block body_data
             sortBy = 'node.userListScore';
             filteredMedia = charMedia.filter(media => media.node.onUserList);
             $('#sort-select').val('userListScore');
+            $(".sort-msg").text("AniList User List Found!");
+            $(".sort-msg").animate({ opacity: 1 }, 500);
         }
 
         let sortedMedia = sortMedia(filteredMedia, sortBy, 'desc');

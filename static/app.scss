@@ -6,6 +6,13 @@
 }
 
 body.va-details {
+    .hero {
+        background-color: rgb(239, 239, 239);
+    }
+    .sort-msg {
+        opacity: 0;
+        color: var(--bs-green);
+    }
     .roles {
         .card-role {
             .img-wrap {
@@ -48,6 +55,24 @@ body.series-search {
 }
 
 body.series-details {
+    .hero {
+        position: relative;
+        background-size: cover;
+        background-position: center center;
+        .overlay-fill {
+            background: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1; /* Make the overlay sit behind the content */
+        }
+        .container {
+            z-index: 2;
+            position: inherit;
+        }
+    }
     .characters {
         .card-character {
             img {

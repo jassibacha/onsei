@@ -46,16 +46,19 @@
     >
         {% include "header.html" %}
 
-        <main id="content" class="my-5">
-            <div class="container">
+        <main id="content" class="{% block content_class %}my-5{% endblock %}">
+            
                 {% with messages = get_flashed_messages(with_categories=true) %}
+                
                 {% if messages %}
+                <div class="container">
                 <section class="messages">
                     {% for category,msg in messages %}
                     <div class="alert alert-{{category}}">{{msg}}</div>
                     {% endfor %}
                 </section>
-                {% endif %} {% endwith %} {% block content %} {% endblock %} {#
+                </div>
+                {% endif %}  {% endwith %} {% block content %} {% endblock %} {#
                 {% include "state-debug.html" %} #}
             </div>
         </main>

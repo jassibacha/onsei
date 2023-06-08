@@ -88,7 +88,7 @@ function createMediaCard(media) {
                 <div class="card-body">
                     
                     ${characterName}
-                    <div class="series">${media.node.title.romaji}</div>
+                    <a href="/series/${media.node.id}" class="series">${media.node.title.romaji}</a>
                     <p>Year: ${media.node.seasonYear}</p>
                     <p>Score: ${media.node.averageScore}</p>
                     <p>Popularity: ${media.node.popularity}</p>

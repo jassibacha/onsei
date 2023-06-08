@@ -1,42 +1,60 @@
 {% extends "base.html" %} {% block title %}{{ output.series.title.english or
 output.series.title.romaji }} Details{% endblock %} {% block body_class
-%}series-details{% endblock %} {% block body_data %}data-series-id="{{ series_id
-}}"{% endblock %} {% block content %}
+%}series-details{% endblock %} {% block content_class %}mb-5{% endblock %} {%
+block body_data %}data-series-id="{{ series_id }}"{% endblock %} {% block
+content %}
 
-<div class="row">
-    <div class="col-sm-4 col-lg-3">
-        <img
-            src="{{ output.series.coverImage.large }}"
-            alt="{{ output.series.title.english or output.series.title.romaji }}"
-            class="img-fluid"
-        />
-    </div>
-    <div class="col-sm-8 col-lg-9">
-        <h1>{{ output.series.title.english or output.series.title.romaji }}</h1>
+<div
+    class="hero mb-3 py-5"
+    style="background-image:url('{{ output.series.bannerImage }}')"
+>
+    <div class="overlay-fill"></div>
+    <div class="container text-white">
+        <div class="row">
+            <div class="col-sm-4 col-lg-3">
+                <img
+                    src="{{ output.series.coverImage.large }}"
+                    alt="{{ output.series.title.english or output.series.title.romaji }}"
+                    class="img-fluid"
+                />
+            </div>
+            <div class="col-sm-8 col-lg-9">
+                <h1>
+                    {{ output.series.title.english or output.series.title.romaji
+                    }}
+                </h1>
+                {% if output.series.title.english %}
+                <h3>({{output.series.title.romaji}})</h3>
+                {% endif %}
 
-        <p>{{ output.series.description }}</p>
+                <p>{{ output.series.description }}</p>
 
-        <p>
-            Season: {{output.series.season}} {{output.series.seasonYear}}<br />
-            Genre: {% for genre in output.series.genres %} {{ genre }} {% if not
-            loop.last %}, {% endif %} {% endfor %}<br />
-            Studio: {{ output.series.studios.edges[0].node.name }}<br />
-        </p>
+                <p>
+                    Season: {{output.series.season}}
+                    {{output.series.seasonYear}}<br />
+                    Genre: {% for genre in output.series.genres %} {{ genre }}
+                    {% if not loop.last %}, {% endif %} {% endfor %}<br />
+                    Studio: {{ output.series.studios.edges[0].node.name }}<br />
+                </p>
+            </div>
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-6"><h3>Characters:</h3></div>
-    <div class="col-sm-6">
-        {#
-        <select id="sort-select">
-            <option value="seasonYear">Sort by season year</option>
-            <option value="popularity">Sort by popularity</option>
-            <option value="averageScore">Sort by average score</option>
-        </select>
-        #}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6"><h3>Characters:</h3></div>
+        <div class="col-sm-6">
+            {#
+            <select id="sort-select">
+                <option value="seasonYear">Sort by season year</option>
+                <option value="popularity">Sort by popularity</option>
+                <option value="averageScore">Sort by average score</option>
+            </select>
+            #}
+        </div>
     </div>
+    <div class="row characters"></div>
 </div>
-<div class="row characters"></div>
 <!-- Temporary section to display the full output string -->
 <div>
     <pre>{{ output }}</pre>
