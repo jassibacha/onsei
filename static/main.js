@@ -55,6 +55,7 @@ function createMediaCard(media) {
     // If character and character image exist, create character img tag
     if (character && character.image) {
         characterImg = `<img src="${character.image.large}" alt="${character.name.full}" class="character-img img-fluid" />`;
+        characterImgUrl = `${character.image.large}`;
     }
 
     // If cover image exists, create series img tag
@@ -78,12 +79,14 @@ function createMediaCard(media) {
     // Constructing the card with the gathered information
     let html = `
         <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
-            <div class="card card-role">
+            <div class="card card-role ">
+                <div class="card-img-top img-wrap d-flex align-items-center mb-3">
+                    ${characterImg}
+                    ${seriesImg}
+                    <div class="blur-bg" style="background-image:url('${characterImgUrl}')"></div>
+                </div>
                 <div class="card-body">
-                    <div class="img-wrap mb-3">
-                        ${characterImg}
-                        ${seriesImg}
-                    </div>
+                    
                     ${characterName}
                     <div class="series">${media.node.title.romaji}</div>
                     <p>Year: ${media.node.seasonYear}</p>

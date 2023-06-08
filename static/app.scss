@@ -5,18 +5,33 @@
     }
 }
 
-.roles {
-    .card-role {
-        .img-wrap {
-            position: relative;
-            max-width: 200px;
-            img.character-img {
-            }
-            img.series-img {
-                width: 40%;
-                position: absolute;
-                right: 0;
-                bottom: 0;
+body.va-details {
+    .roles {
+        .card-role {
+            .img-wrap {
+                position: relative;
+                aspect-ratio: 3 / 4.5;
+                overflow: hidden;
+                //max-width: 200px;
+                img.character-img {
+                    z-index: 3;
+                }
+                img.series-img {
+                    width: 40%;
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 3;
+                }
+                .blur-bg {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1;
+                    background-size: cover;
+                    filter: blur(10px);
+                    transform: scale(1.2);
+                }
             }
         }
     }
@@ -40,6 +55,12 @@ body.series-details {
             }
         }
     }
+}
+
+.card-img-top {
+    width: auto;
+    height: 100%;
+    border-radius: calc(0.25rem - 1px) 0 calc(0.25rem - 1px) 0;
 }
 
 .card-img-left {
