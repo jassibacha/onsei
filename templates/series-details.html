@@ -27,7 +27,9 @@ content %}
                 <h3>({{output.series.title.romaji}})</h3>
                 {% endif %}
 
-                <p>{{ output.series.description }}</p>
+                <div class="description mb-2">
+                    {{ output.series.description|safe }}
+                </div>
 
                 <p>
                     Season: {{output.series.season}}
@@ -65,6 +67,52 @@ content %}
     var seriesId = $('body').data('series-id');
     console.log('Script is running, series id:', seriesId);
 
+    $(document).ready(function () {
+        var showChar = 300;
+        var ellipsestext = '...';
+        var moretext = 'Read more';
+        var lesstext = 'Read less';
+        $('.description').each(function () {
+            var content = $(this).html();
+            var description = content.trim();
+
+            if (description.length > showChar) {
+                var shownDesc = description.substr(0, showChar);
+                var hiddenDesc = description.substr(
+                    showChar,
+                    description.length - showChar
+                );
+
+                var html =
+                    shownDesc +
+                    '<span class="moreellipses">' +
+                    ellipsestext +
+                    '&nbsp;</span><span class="morecontent"><span>' +
+                    hiddenDesc +
+                    '</span>&nbsp;<a href="" class="morelink text-white">' +
+                    moretext +
+                    '</a></span>';
+
+                $(this).html(html);
+            }
+
+            $('.morelink').click(function () {
+                if ($(this).hasClass('less')) {
+                    $(this).removeClass('less');
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass('less');
+                    $(this).html(lesstext);
+                }
+
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+
+                return false;
+            });
+        });
+    });
+
     // Pull user's anime list (can be empty)
     let animeList;
 
@@ -75,67 +123,7 @@ content %}
         // Update charMedia with our API payload
         seriesMedia = media;
 
-        let filteredMedia;
-
         displaySeriesRoles(seriesMedia);
-        /*
-        if (!animeList || animeList.length === 0) {
-            console.log('No animeList provided or list is empty.');
-            filteredMedia = seriesMedia;
-            //sortBy = 'node.seasonYear';
-        } else {
-            
-            console.log("User animeList not empty, add userdata to seriesMedia before sorting.");
-            // Add user's list data to seriesMedia
-            for (let media of seriesMedia) {
-                // If the media is in the users list, add the data!
-                let mediaId = media.node.id;
-                if (animeList[mediaId]) {
-                    media.node.userListStatus = animeList[mediaId].status;
-                    media.node.userListScore = animeList[mediaId].score;
-                    media.node.userListSeasonYear = media.node.seasonYear;
-                    media.node.onUserList = true;
-                } else {
-                    // Media isn't in their list? False so we can filter easy!
-                    media.node.onUserList = false;
-                }
-            }
-
-            // Add sort options based on user data
-            $('#sort-select').append($('<option>', { value : 'userListScore' }).text('Sort by user list score'));
-            $('#sort-select').append($('<option>', { value : 'userListSeasonYear' }).text('Sort by user list season year'));
-
-            sortBy = 'node.userListScore';
-            filteredMedia = seriesMedia.filter(media => media.node.onUserList);
-            $('#sort-select').val('userListScore');
-            
-        }
-*/
-        //let sortedMedia = sortMedia(filteredMedia, sortBy, 'desc');
-        //displaySeriesRoles(sortedMedia);
     });
-    /*
-    document
-        .getElementById('sort-select')
-        .addEventListener('change', function () {
-            let sortBy = this.value;
-            //console.log('SORT BY: ', sortBy);
-
-            let filteredMedia;
-            // If sorting by user list score or user list season year, filter out media not on the user list
-            if (sortBy === 'userListScore' || sortBy === 'userListSeasonYear') {
-                filteredMedia = charMedia.filter(media => media.node.onUserList);
-            } else {
-                // Otherwise use the whole media list
-                filteredMedia = charMedia;
-            }
-
-            let sortedMedia = sortMedia(filteredMedia, 'node.' + sortBy, 'desc');
-            // First clear the current display
-            $('.roles').empty();
-            // Then display the sorted media
-            displayCharacterMedia(sortedMedia);
-        });
-        */
 </script>
 {% endblock %}

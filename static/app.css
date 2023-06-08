@@ -58,6 +58,21 @@ body.series-details .hero .container {
   z-index: 2;
   position: inherit;
 }
+body.series-details .hero .description .morecontent span {
+  display: none;
+}
+body.series-details .hero .description .morecontent .read-more {
+  display: inline;
+  color: blue;
+  cursor: pointer;
+}
+body.series-details .hero .description .moreellipses {
+  display: inline;
+}
+body.series-details .hero .description .morecontent {
+  margin: 0;
+  padding: 0;
+}
 body.series-details .characters .card-character img {
   width: 50px;
 }

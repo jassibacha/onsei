@@ -72,6 +72,24 @@ body.series-details {
             z-index: 2;
             position: inherit;
         }
+        .description .morecontent span {
+            display: none;
+        }
+
+        .description .morecontent .read-more {
+            display: inline;
+            color: blue;
+            cursor: pointer;
+        }
+
+        .description .moreellipses {
+            display: inline;
+        }
+
+        .description .morecontent {
+            margin: 0;
+            padding: 0;
+        }
     }
     .characters {
         .card-character {
