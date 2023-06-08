@@ -35,6 +35,46 @@ body.va-details .roles .card-role .img-wrap .blur-bg {
   filter: blur(10px);
   transform: scale(1.2);
 }
+body.va-details .roles .card-role .info .title {
+  color: #6c757d;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: -5px;
+}
+body.va-details .roles .card-role .info .year {
+  font-weight: 600;
+}
+body.va-details .roles .card-role .info .popularity {
+  font-weight: 600;
+  font-size: 18px;
+}
+body.va-details .roles .card-role .info .score {
+  aspect-ratio: 1/1;
+  width: 50px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 400px) {
+  body.va-details .roles .card-role .info .score {
+    max-width: 40px;
+    width: unset;
+    font-size: 18px;
+  }
+}
+body.va-details .roles .card-role .userlist .list-group-item {
+  padding: 5px 10px;
+}
+body.va-details .roles .card-role .userlist .badge {
+  font-size: 11px;
+}
+body.va-details .roles .card-role .userlist .bg-purple {
+  background-color: var(--bs-purple);
+}
 
 body.series-search .series .card-series .cover {
   width: 100px !important;
@@ -133,7 +173,6 @@ body.series-details .characters .card-character .popular-roles .character .img-w
 .card-img-top {
   width: auto;
   height: 100%;
-  border-radius: calc(0.25rem - 1px) 0 calc(0.25rem - 1px) 0;
 }
 
 .card-img-left {
@@ -144,4 +183,24 @@ body.series-details .characters .card-character .popular-roles .character .img-w
 
 .card-img-poster {
   width: 100px;
+}
+
+.score-red {
+  background-color: var(--bs-red);
+}
+
+.score-orange {
+  background-color: var(--bs-orange);
+}
+
+.score-yellow-orange {
+  background-color: #ffa500;
+}
+
+.score-yellow-green {
+  background-color: var(--bs-teal);
+}
+
+.score-green {
+  background-color: var(--bs-green);
 }/*# sourceMappingURL=app.css.map */

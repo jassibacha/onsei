@@ -65,41 +65,88 @@ function createMediaCard(media) {
 
     // If character and character name exist, create h5 tag
     if (character && character.name) {
-        characterName = `<h5 class="character">${character.name.full}</h5>`;
+        characterName = `<strong>${character.name.full}</strong>`;
+        //characterName = `<h5 class="character">${character.name.full}</h5>`;
     }
 
     // Do userListScore & userListStatus exist for this media?
     let userListScore = media.node.userListScore
-        ? `<p>User Score: ${media.node.userListScore}</p>`
+        ? `Score: ${media.node.userListScore}`
         : '';
+
+    let badgeClass;
+    if (media.node.userListStatus === 'COMPLETED') {
+        badgeClass = 'bg-success';
+    } else if (media.node.userListStatus === 'CURRENT') {
+        badgeClass = 'bg-purple';
+    } else {
+        badgeClass = '';
+    }
     let userListStatus = media.node.userListStatus
-        ? `<p>User Status: ${media.node.userListStatus}</p>`
+        ? `<span class="badge ${badgeClass}">${media.node.userListStatus}</span>`
         : '';
+
+    // let userListStatus = media.node.userListStatus
+    //     ? `<span class="badge">${media.node.userListStatus}</span>`
+    //     : '';
 
     // Constructing the card with the gathered information
     let html = `
-        <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
-            <div class="card card-role ">
-                <div class="card-img-top img-wrap d-flex align-items-center mb-3">
+        <div class="col-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
+            <div class="card card-role mb-3">
+                <div class="card-img-top img-wrap d-flex align-items-center">
                     ${characterImg}
                     ${seriesImg}
                     <div class="blur-bg" style="background-image:url('${characterImgUrl}')"></div>
                 </div>
                 <div class="card-body">
-                    
+                    <div class="name">
                     ${characterName}
-                    <a href="/series/${media.node.id}" class="series">${media.node.title.romaji}</a>
-                    <p>Year: ${media.node.seasonYear}</p>
-                    <p>Score: ${media.node.averageScore}</p>
-                    <p>Popularity: ${media.node.popularity}</p>
-                    ${userListScore}
-                    ${userListStatus}
-                    AL Link: <a href="https://anilist.co/anime/${media.node.id}">Link</a>
+                    </div>
+                    <a href="/series/${
+                        media.node.id
+                    }" class="series d-block small mb-2">
+                    ${media.node.title.english || media.node.title.romaji}
+                    </a>
+                    <div class="info d-flex flex-row justify-content-between">
+                        <div class="">
+                            <div class="title">Year</div>
+                            <div class="year">
+                            ${media.node.seasonYear}
+                            </div>
+                            <div class="title">Users</div>
+                            <div class="popularity">
+                            ${formatNumber(media.node.popularity)}
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="title mb-0 text-center">Score</div>
+                            <div class="score d-flex ${getScoreClass(
+                                media.node.averageScore
+                            )}">${media.node.averageScore}</div>
+                        </div>
+                    </div>
+                    
                 </div>
+                    <ul class="userlist list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">${userListScore} ${userListStatus}</li>
+                    </ul>
             </div>
         </div>`;
     return html;
 }
+/*
+
+<div class="info d-flex flex-row">
+    <div class="col-7 col-sm-8">
+
+    </div>
+    <div class="col-5 col-sm-4 text-center">
+
+    </div>
+</div>
+
+*/
 
 /* *****************************
  ** */
@@ -206,6 +253,30 @@ function createRoleCard(char) {
             </div>
         </div>`;
     return html;
+}
+
+// Number formatting for popularity display
+function formatNumber(number) {
+    if (number >= 1000) {
+        return (number / 1000).toFixed(1) + 'k'; // convert to K for number from > 1000 < 1 million
+    } else {
+        return number; // if value < 1000, nothing to do so return the same number
+    }
+}
+
+// Taking a score and getting a css class for background color
+function getScoreClass(score) {
+    // normalize scores that are between 0-10 and 0-10 with decimals to 0-100
+    if (score <= 10) {
+        score *= 10;
+    }
+
+    if (score >= 0 && score <= 20) return 'score-red';
+    else if (score >= 21 && score <= 40) return 'score-orange';
+    else if (score >= 41 && score <= 60) return 'score-yellow-orange';
+    else if (score >= 61 && score <= 80) return 'score-yellow-green';
+    else if (score >= 81 && score <= 100) return 'score-green';
+    else return '';
 }
 
 // // DEPRECATED: Load and sort the media

@@ -40,6 +40,67 @@ body.va-details {
                     transform: scale(1.2);
                 }
             }
+            .info {
+                .title {
+                    color: #6c757d;
+                    text-transform: uppercase;
+                    font-size: 13px;
+                    font-weight: bold;
+                    margin-bottom: -5px;
+                }
+                .year {
+                    font-weight: 600;
+                }
+                .popularity {
+                    font-weight: 600;
+                    font-size: 18px;
+                }
+                .score {
+                    aspect-ratio: 1 / 1;
+                    // Default styles for screens wider than 400px
+                    width: 50px; // Default width for screens wider than 400px
+                    font-size: 24px;
+
+                    @media (max-width: 400px) {
+                        max-width: 40px; // Max width for screens narrower than 400px
+                        width: unset; // Reset the width property
+                        font-size: 18px;
+                    }
+                    // background-color: green; this is dynamic via js now
+                    font-weight: bold;
+                    color: #fff;
+                    border-radius: 50%;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+            .userlist {
+                .list-group-item {
+                    padding: 5px 10px;
+                }
+                .badge {
+                    font-size: 11px;
+                }
+                .bg-purple {
+                    background-color: var(--bs-purple);
+                }
+            }
+            // .stats {
+            //     justify-content: space-between;
+            //     .stat {
+            //         background-color: cadetblue;
+            //         color: #fff;
+            //         text-align: center;
+            //         .top {
+            //             font-size: 20px;
+            //             font-weight: bold;
+            //         }
+            //         .bottom {
+            //             font-size: 12px;
+            //             text-transform: uppercase;
+            //         }
+            //     }
+            // }
         }
     }
 }
@@ -170,7 +231,7 @@ body.series-details {
 .card-img-top {
     width: auto;
     height: 100%;
-    border-radius: calc(0.25rem - 1px) 0 calc(0.25rem - 1px) 0;
+    // border-radius: calc(0.25rem - 1px) 0 calc(0.25rem - 1px) 0;
 }
 
 .card-img-left {
@@ -180,4 +241,20 @@ body.series-details {
 }
 .card-img-poster {
     width: 100px;
+}
+
+.score-red {
+    background-color: var(--bs-red);
+}
+.score-orange {
+    background-color: var(--bs-orange);
+}
+.score-yellow-orange {
+    background-color: #ffa500; // Color for Yellow Orange
+}
+.score-yellow-green {
+    background-color: var(--bs-teal); // Color for Yellow Green
+}
+.score-green {
+    background-color: var(--bs-green);
 }
