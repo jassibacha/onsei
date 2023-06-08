@@ -125,6 +125,7 @@ function displaySeriesRoles(seriesRoles) {
         $('.characters').append(html);
     }
 
+    // Declare these after creation to allow bootstrap tooltips
     const tooltipTriggerList = document.querySelectorAll(
         '[data-bs-toggle="tooltip"]'
     );
