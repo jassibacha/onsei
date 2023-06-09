@@ -72,6 +72,12 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
     var vaId = $('body').data('va-id');
     console.log('Script is running, va id:', vaId);
 
+    {% if g.user.anilist_profile_accessible and g.user.anilist_username %}
+        let aniListUsername = "{{ g.user.anilist_username }}";
+    {% else %}
+        let aniListUsername = "";
+    {% endif %}
+
     // Pull user's anime list (can be empty)
     {% if output.anime_list is defined %}
         let animeList = {{ output.anime_list|tojson|safe }};
@@ -121,7 +127,7 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
         }
 
         let sortedMedia = sortMedia(filteredMedia, sortBy, 'desc');
-        displayCharacterMedia(sortedMedia);
+        displayCharacterMedia(sortedMedia, aniListUsername);
     });
 
     document
@@ -143,7 +149,7 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
             // First clear the current display
             $('.roles').empty();
             // Then display the sorted media
-            displayCharacterMedia(sortedMedia);
+            displayCharacterMedia(sortedMedia, aniListUsername);
         });
 </script>
 {% endblock %}

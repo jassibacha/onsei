@@ -40,6 +40,14 @@ body.va-details {
                     transform: scale(1.2);
                 }
             }
+            a.series {
+                color: rgb(78, 83, 86);
+                text-decoration: none;
+                font-weight: bold;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
             .info {
                 .title {
                     color: #6c757d;
@@ -75,6 +83,12 @@ body.va-details {
                 }
             }
             .userlist {
+                .al-user {
+                    margin-top: -15px;
+                    .badge {
+                        border: 1px solid var(--bs-border-color-translucent);
+                    }
+                }
                 .list-group-item {
                     padding: 5px 10px;
                 }

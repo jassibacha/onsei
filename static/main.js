@@ -35,15 +35,15 @@ function sortMedia(media, attr, order = 'asc') {
 }
 
 // Display character media after we've pulled it all!
-function displayCharacterMedia(charMedia) {
+function displayCharacterMedia(charMedia, aniListUsername) {
     for (let media of charMedia) {
-        let html = createMediaCard(media);
+        let html = createMediaCard(media, aniListUsername);
         $('.roles').append(html);
     }
 }
 
 // Function to display the 'Media Card'
-function createMediaCard(media) {
+function createMediaCard(media, aniListUsername = '') {
     // We first store the character in a variable for readability.
     let character = media.characters[0];
 
@@ -70,25 +70,31 @@ function createMediaCard(media) {
     }
 
     // Do userListScore & userListStatus exist for this media?
-    let userListScore = media.node.userListScore
-        ? `Score: ${media.node.userListScore}`
-        : '';
+    let userListScore = '';
+    let badgeClass = '';
+    let userListStatus = '';
+    let aniListUserElement = '';
 
-    let badgeClass;
-    if (media.node.userListStatus === 'COMPLETED') {
-        badgeClass = 'bg-success';
-    } else if (media.node.userListStatus === 'CURRENT') {
-        badgeClass = 'bg-purple';
-    } else {
-        badgeClass = '';
+    // Check if media.node.onUserList is true
+    if (media.node.onUserList) {
+        userListScore = media.node.userListScore
+            ? `<span class="badge text-bg-light bg-light">SCORE: ${media.node.userListScore}</span>`
+            : '';
+
+        if (media.node.userListStatus === 'COMPLETED') {
+            badgeClass = 'bg-success';
+        } else if (media.node.userListStatus === 'CURRENT') {
+            badgeClass = 'bg-purple';
+        } else {
+            badgeClass = '';
+        }
+        userListStatus = media.node.userListStatus
+            ? `<span class="badge ${badgeClass}">${media.node.userListStatus}</span>`
+            : '';
+
+        // Add aniListUsername if not empty
+        aniListUserElement = `<div class="al-user text-center"><span class="badge rounded-pill text-bg-light">${aniListUsername}</span></div>`;
     }
-    let userListStatus = media.node.userListStatus
-        ? `<span class="badge ${badgeClass}">${media.node.userListStatus}</span>`
-        : '';
-
-    // let userListStatus = media.node.userListStatus
-    //     ? `<span class="badge">${media.node.userListStatus}</span>`
-    //     : '';
 
     // Constructing the card with the gathered information
     let html = `
@@ -128,9 +134,16 @@ function createMediaCard(media) {
                     </div>
                     
                 </div>
-                    <ul class="userlist list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">${userListScore} ${userListStatus}</li>
-                    </ul>
+                ${
+                    media.node.onUserList
+                        ? `
+                        <ul class="userlist list-group list-group-flush">
+                            ${aniListUserElement}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">${userListScore} ${userListStatus}</li>
+                        </ul>
+                        `
+                        : ``
+                }
             </div>
         </div>`;
     return html;

@@ -35,6 +35,14 @@ body.va-details .roles .card-role .img-wrap .blur-bg {
   filter: blur(10px);
   transform: scale(1.2);
 }
+body.va-details .roles .card-role a.series {
+  color: rgb(78, 83, 86);
+  text-decoration: none;
+  font-weight: bold;
+}
+body.va-details .roles .card-role a.series:hover {
+  text-decoration: underline;
+}
 body.va-details .roles .card-role .info .title {
   color: #6c757d;
   text-transform: uppercase;
@@ -65,6 +73,12 @@ body.va-details .roles .card-role .info .score {
     width: unset;
     font-size: 18px;
   }
+}
+body.va-details .roles .card-role .userlist .al-user {
+  margin-top: -15px;
+}
+body.va-details .roles .card-role .userlist .al-user .badge {
+  border: 1px solid var(--bs-border-color-translucent);
 }
 body.va-details .roles .card-role .userlist .list-group-item {
   padding: 5px 10px;
