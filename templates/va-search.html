@@ -52,13 +52,8 @@ block body_class %}va-search{% endblock %} {% block content %}
                 <div class="card-body">
                     <h5 class="card-title h4-sm">{{ va.name.full }}</h5>
                     <div>
-                        {% for character in va.characters.nodes[:5] %}
+                        {% for character in va.characters.nodes %}
                         <h6>Character: {{ character.name.full }}</h6>
-
-                        {# {% for media in character.media.nodes[:1] %} {{
-                        media.title.english or media.title.romaji }} {% endfor
-                        %} {% if character.media.nodes|length > 0 %} Media: {{
-                        character.media.nodes[0].title.english }} {% endif %}#}
                         {% endfor %}
                     </div>
                     <a href="/va/{{ va.id }}" class="btn btn-primary">
@@ -70,4 +65,8 @@ block body_class %}va-search{% endblock %} {% block content %}
         {% endfor %}
     </div>
 </div>
-{% endif %} {% endblock %}
+{% endif %}
+<div>
+    <pre>{{ staff }}</pre>
+</div>
+{% endblock %}
