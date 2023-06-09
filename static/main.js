@@ -1,18 +1,3 @@
-// Grab the character media from our API endpoint
-async function getCharacterMedia(vaId) {
-    try {
-        const response = await axios.get(`/api/character_media/${vaId}`, {
-            headers: {
-                Authorization: 'Bearer wnYW3pY6b/pmAsNur?sbx=EOrTDKqslHIGjG',
-            },
-        });
-
-        return response.data;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 // Function to get a nested property value from an object
 function getNestedAttr(obj, attr) {
     return attr.split('.').reduce((o, key) => o && o[key], obj);
@@ -32,6 +17,24 @@ function sortMedia(media, attr, order = 'asc') {
             return attrB - attrA;
         }
     });
+}
+
+/*******************************
+ * VA SPECIFIC FUNCTIONS
+ ***************************** */
+// Grab the character media from our API endpoint
+async function getCharacterMedia(vaId) {
+    try {
+        const response = await axios.get(`/api/character_media/${vaId}`, {
+            headers: {
+                Authorization: 'Bearer wnYW3pY6b/pmAsNur?sbx=EOrTDKqslHIGjG',
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 // Display character media after we've pulled it all!
@@ -165,8 +168,9 @@ function createMediaCard(media, aniListUsername = '') {
 
 */
 
-/* *****************************
- ** */
+/*******************************
+ * SERIES SPECIFIC FUNCTIONS
+ ***************************** */
 // Grab the series characters and roles from our API endpoint
 async function getSeriesRoles(seriesId) {
     try {
@@ -232,26 +236,6 @@ function createRoleCard(char) {
             voiceActorImage = char.voiceActors[0].image.medium;
         }
         voiceActorId = char.voiceActors[0].id;
-
-        // // Check if voice actor has characters
-        // if (
-        //     char.voiceActors[0].characters &&
-        //     char.voiceActors[0].characters.nodes
-        // ) {
-        //     // Iterate over characters
-        //     char.voiceActors[0].characters.nodes.forEach((character) => {
-        //         // Only add character if id is not 36309 (Narrator)
-        //         if (character.id !== 36309) {
-        //             voiceActorCharacters += `
-        //             <div class="character w-20">
-        //                 <div class="img-wrap d-flex justify-content-center align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
-        //                     <img src="${character.image.medium}" alt="${character.name.full}" class="character-img img-fluid" />
-        //                     <div class="blur-bg" style="background-image:url('${character.image.medium}')"></div>
-        //                 </div>
-        //             </div>`;
-        //         }
-        //     });
-        // }
 
         let count = 0;
         // Iterate over characters
