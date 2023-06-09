@@ -298,125 +298,18 @@ def va_search():
         # Display the search page without making a GraphQL query
         return render_template('va-search.html')
 
-    # Perform the GraphQL query with the search query
-    graphql_query = '''
-    query ($page: Int, $perPage: Int, $search: String) {
-        Page(page: $page, perPage: $perPage) {
-            pageInfo {
-                total
-                currentPage
-                lastPage
-                hasNextPage
-                perPage
-            }
-            staff(search: $search) {
-                id
-                name {
-                    first
-                    last
-                    full
-                }
-                image {
-                    large
-                    medium
-                }
-                characters (perPage: 3) {
-                    nodes {
-                        name {
-                            full
-                        }
-                        image {
-                            medium
-                        }
-                        media {
-                            nodes {
-                            id
-                                title {
-                                    romaji
-                                    english
-                                    userPreferred
-                                }
-                                coverImage {
-                                    medium
-                                    color
-                                } 
-                                meanScore
-                                popularity
-                                trending
-                                favourites
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    '''
+    # Send the search query to the AniList API
+    response_data = search_voice_actors(query, app)
+    staff = response_data['data']['va']
+    print(staff)
+    status_code = response_data['data']['status_code']
 
-    graphql_query2 = '''
-    query GetVA($page: Int, $perPage: Int, $search: String) {
-		Page(page: $page, perPage: $perPage) {
-			pageInfo {
-				total
-				currentPage
-				lastPage
-				hasNextPage
-				perPage
-			}
-			staff(search: $search) {
-				id
-				name {
-					full
-				}
-                image {
-                    large
-                    medium
-                }
-				characters(page: 1, perPage: 5, sort:FAVOURITES_DESC) {
-					nodes {
-						id
-						name {
-							full
-						}
-						favourites
-						media(sort: FAVOURITES_DESC) {
-							nodes {
-								id
-								title {
-									english
-									romaji
-								}
-								type
-								favourites
-							}
-						}
-					}
-                }
-			}
-		}
-    }
-    '''
+    if status_code != 200:
+        flash(f'An error occurred when contacting the AniList API. (Status code: {status_code})')
+        return render_template('va-search.html')
 
-    variables = {
-        'search': query,
-        'page': 1,
-        'perPage': 50
-    }
-
-    # Send the GraphQL query to the AniList API
-    response = requests.post(ANILIST_API_URL, json={'query': graphql_query2, 'variables': variables}, headers=ANILIST_API_HEADERS)
-
-    # Process the response
-    if response.status_code == 200:
-        app.logger.debug('*** 200 CODE, RESPONSE IS GOOD ***')
-        data = json.loads(response.text)
-        va = data['data']['Page']['staff']
-        return render_template('va-search.html', va=va, query=query)
-    else:
-        app.logger.debug('Request failed with status code:', response.status_code)
-        app.logger.debug('Response:', response.text)
-
-    return render_template('va-search.html')
+    # Send the results to the search results page
+    return render_template('va-search.html', staff=staff, query=query)
 
 
 @app.route('/va/<int:va_id>', methods=['GET', 'POST'])

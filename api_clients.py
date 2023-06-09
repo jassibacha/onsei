@@ -33,6 +33,158 @@ def make_api_request(query, variables, app):
         app.logger.debug('Response: %s', response.text)
         return None
 
+
+def search_voice_actors(search_query, app):
+    """Fetch all voice actors based on search query"""
+
+    graphql_query = '''
+    query ($page: Int, $perPage: Int, $search: String) {
+        Page(page: $page, perPage: $perPage) {
+            pageInfo {
+                total
+                currentPage
+                lastPage
+                hasNextPage
+                perPage
+            }
+            staff(search: $search) {
+                id
+                name {
+                    first
+                    last
+                    full
+                }
+                image {
+                    large
+                    medium
+                }
+                characters (perPage: 3) {
+                    nodes {
+                        name {
+                            full
+                        }
+                        image {
+                            medium
+                        }
+                        media {
+                            nodes {
+                            id
+                                title {
+                                    romaji
+                                    english
+                                    userPreferred
+                                }
+                                coverImage {
+                                    medium
+                                    color
+                                } 
+                                meanScore
+                                popularity
+                                trending
+                                favourites
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    '''
+
+    graphql_query3 = '''
+    query GetVA($page: Int, $perPage: Int, $search: String) {
+		Page(page: $page, perPage: $perPage) {
+			pageInfo {
+				total
+				currentPage
+				lastPage
+				hasNextPage
+				perPage
+			}
+			staff(search: $search) {
+				id
+				name {
+					full
+                }
+                image {
+                    large
+                    medium
+                }
+				characters(page: 1, perPage: 6, sort:FAVOURITES_DESC) {
+					nodes {
+						id
+						name {
+							full
+						}
+                        image {
+                            medium
+                        }
+						favourites
+					}
+				}
+			}
+		}
+    }
+    '''
+    # media(sort: FAVOURITES_DESC) {
+    #     nodes {
+    #         id
+    #         title {
+    #             english
+    #             romaji
+    #         }
+    #         type
+    #         favourites
+    #     }
+    # }
+
+    # Variables for the GraphQL query
+    variables = {
+        'search': search_query,
+        'page': 1,
+        'perPage': 50
+    }
+
+    # Make the initial API request
+    response = make_api_request(graphql_query3, variables, app)
+
+    app.logger.debug(f'*** SEARCH VOICE ACTORS: {search_query} ***')
+
+    if response is not None:
+        app.logger.debug('***** RESPONSE IS NOT NONE *****')
+        search_staff = response['data']['Page']
+        all_staff = search_staff['staff']
+
+        # Fetch additional pages if available
+        while search_staff['pageInfo']['hasNextPage']:
+            app.logger.debug("*** NEXT PAGE AVAIL, +1 PAGE AND REQUEST API AGAIN ***")
+            variables['page'] += 1
+            app.logger.debug(f"*** PAGE {variables['page']} OF {search_staff['pageInfo']['total']} ***")
+            response = make_api_request(graphql_query, variables, app)
+
+            if response is not None:
+                app.logger.debug('*** RESPONSE WORKED, EXTEND all_staff ***')
+                search_staff = response['data']['Page']
+                all_staff.extend(search_staff['staff'])
+            else:
+                break
+
+        response_data = {
+            "data": {
+                "status_code": 200,
+                "va": all_staff,
+            }
+        }
+        return response_data
+
+    # If the response is None, return a dictionary with a status_code key
+    return {
+        "data": {
+            "status_code": response.status_code if response else 500,
+            "va": [],
+        }
+    }
+
 def fetch_all_character_media(va_id, app):
     """Fetch all characterMedia series for a VA based on ID."""
 
