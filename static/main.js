@@ -201,8 +201,9 @@ function displaySeriesRoles(seriesRoles) {
 // Function to display the 'Media Card'
 function createRoleCard(char) {
     let characterName = 'N/A';
-    let voiceActorName = 'N/A';
+    let characterRole = '';
     let characterImage = '/static/img/character-empty.jpg';
+    let voiceActorName = 'N/A';
     let voiceActorImage = '/static/img/va-empty.jpg';
     let voiceActorId = 'N/A';
     let voiceActorCharacters = '';
@@ -214,6 +215,13 @@ function createRoleCard(char) {
         if (char.node.image && char.node.image.medium) {
             characterImage = char.node.image.medium;
         }
+    }
+
+    if (char.role) {
+        let formattedRole =
+            char.role.charAt(0).toUpperCase() +
+            char.role.slice(1).toLowerCase();
+        characterRole = `<small class="role d-block">${formattedRole}</small>`;
     }
 
     if (char.voiceActors && char.voiceActors.length > 0) {
@@ -249,13 +257,21 @@ function createRoleCard(char) {
             <div class="card card-character">
                 <div class="card-top d-flex flex-row text-bg-dark">
                     <div class="col-6 left">
-                        <img src="${characterImage}" class="char-img" alt="${characterName}" />
-                        <span class="character-text lh-sm ps-2 pe-1">${characterName}</span>
+                        <div class="char-img-wrap d-flex align-items-center justify-content-center">
+                        <img src="${characterImage}" class="char-img img-fluid" alt="${characterName}" />
+                        </div>
+                        <span class="character-text lh-sm ps-2 pe-1">
+                        ${characterName}
+                        ${characterRole}
+                        </span>
+                        
                     </div>
                     <div class="col-6 right">
                         <a href="/va/${voiceActorId}" class="justify-content-end text-end text-white">
                             <span class="character-text lh-sm text-end ps-1 pe-2">${voiceActorName}</span>
-                            <img src="${voiceActorImage}" class="va-img" alt="${voiceActorName}" />
+                            <div class="va-img-wrap d-flex align-items-center justify-content-center">
+                            <img src="${voiceActorImage}" class="va-img img-fluid" alt="${voiceActorName}" />
+                            </div>
                         </a>
                     </div>
                 </div>

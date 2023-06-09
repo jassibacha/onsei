@@ -315,6 +315,7 @@ def fetch_series_characters_roles(series_id, app):
                     hasNextPage
                 }
                 edges {
+                    role
                     node {
                         id
                         name {

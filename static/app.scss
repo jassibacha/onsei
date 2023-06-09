@@ -171,9 +171,19 @@ body.series-details {
     }
     .characters {
         .card-character {
-            img.char-img,
-            img.va-img {
-                width: 50px;
+            .va-img-wrap,
+            .char-img-wrap {
+                aspect-ratio: 1/1.4;
+                /* position: relative; */
+                overflow: hidden;
+                width: 50px !important;
+                height: 75px;
+                img.char-img,
+                img.va-img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
             }
             .character-text {
                 word-wrap: break-word;
@@ -186,6 +196,9 @@ body.series-details {
                 word-wrap: break-word;
             }
             .left {
+                .role {
+                    color: #ffed8f;
+                }
                 img {
                     border-radius: calc(0.25rem - 1px) 0 0 calc(0.25rem - 1px);
                 }
