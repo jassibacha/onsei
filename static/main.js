@@ -106,12 +106,12 @@ function createMediaCard(media, aniListUsername = '') {
                     <div class="blur-bg" style="background-image:url('${characterImgUrl}')"></div>
                 </div>
                 <div class="card-body">
-                    <div class="name">
+                    <div class="name lh-sm mb-1">
                     ${characterName}
                     </div>
                     <a href="/series/${
                         media.node.id
-                    }" class="series d-block small mb-2">
+                    }" class="series d-block small lh-sm mb-2">
                     ${media.node.title.english || media.node.title.romaji}
                     </a>
                     <div class="info d-flex flex-row justify-content-between">
@@ -125,12 +125,16 @@ function createMediaCard(media, aniListUsername = '') {
                             ${formatNumber(media.node.popularity)}
                             </div>
                         </div>
-                        <div class="text-center">
-                            <div class="title mb-0 text-center">Score</div>
-                            <div class="score d-flex ${getScoreClass(
-                                media.node.averageScore
-                            )}">${media.node.averageScore}</div>
-                        </div>
+                        ${
+                            media.node.averageScore
+                                ? `<div class="text-center">
+                                <div class="title mb-0 text-center">Score</div>
+                                <div class="score d-flex ${getScoreClass(
+                                    media.node.averageScore
+                                )}">${media.node.averageScore}</div>
+                            </div>`
+                                : ``
+                        }
                     </div>
                     
                 </div>
@@ -230,11 +234,9 @@ function createRoleCard(char) {
             char.voiceActors[0].characters.nodes.forEach((character) => {
                 voiceActorCharacters += `
                 <div class="character w-20">
-                    <div class="img-wrap d-flex align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
-                        <img src="${character.image.medium}" alt="${character.name.full}" class="img-fluid" />
-                        <div class="overlay px-2">
-                        ${character.name.full}
-                        </div>
+                    <div class="img-wrap d-flex justify-content-center align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
+                        <img src="${character.image.medium}" alt="${character.name.full}" class="character-img img-fluid" />
+                        <div class="blur-bg" style="background-image:url('${character.image.medium}')"></div>
                     </div>
                 </div>`;
             });
@@ -245,14 +247,14 @@ function createRoleCard(char) {
     let html = `
         <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
             <div class="card card-character">
-                <div class="card-top d-flex flex-row">
+                <div class="card-top d-flex flex-row text-bg-dark">
                     <div class="col-6 left">
                         <img src="${characterImage}" class="char-img" alt="${characterName}" />
-                        <span class="character-text ps-2 pe-1">${characterName}</span>
+                        <span class="character-text lh-sm ps-2 pe-1">${characterName}</span>
                     </div>
                     <div class="col-6 right">
-                        <a href="/va/${voiceActorId}" class="justify-content-end text-end">
-                            <span class="character-text text-end ps-1 pe-2">${voiceActorName}</span>
+                        <a href="/va/${voiceActorId}" class="justify-content-end text-end text-white">
+                            <span class="character-text lh-sm text-end ps-1 pe-2">${voiceActorName}</span>
                             <img src="${voiceActorImage}" class="va-img" alt="${voiceActorName}" />
                         </a>
                     </div>

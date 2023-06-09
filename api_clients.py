@@ -303,6 +303,56 @@ def search_anime_series(search_query, app):
 def fetch_series_characters_roles(series_id, app):
     """Fetch all characters and their VA's for a series based on ID."""
 
+    # Reworked query not pulling extra media on voiceActor > characters query
+    graphql_query2 = '''
+    query ($id: Int, $page: Int, $perPage: Int) {
+        Media(id: $id) {
+            characters (page: $page, perPage: $perPage, sort: FAVOURITES_DESC) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                }
+                edges {
+                    node {
+                        id
+                        name {
+                            full
+                        }
+                        image {
+                            large
+                            medium
+                        }
+                    }
+                    voiceActors (language: JAPANESE) {
+                        name {
+                            full
+                        }
+                        id
+                        image {
+                            large
+                            medium
+                        }
+                        characters (page: 1, perPage: 6, sort:FAVOURITES_DESC) {
+                            nodes {
+                                name {
+                                    full
+                                }
+                                id
+                                image {
+                                    large
+                                    medium
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+		}
+    }
+    '''
+
     # GraphQL query to fetch characterMedia by staff ID
     graphql_query = '''
     query ($id: Int, $page: Int, $perPage: Int) {
@@ -374,7 +424,7 @@ def fetch_series_characters_roles(series_id, app):
     }
 
     # Make the initial API request
-    response = make_api_request(graphql_query, variables, app)
+    response = make_api_request(graphql_query2, variables, app)
 
 
     app.logger.debug(f'*** FETCH ALL SERIES CHARACTERS: {series_id} ***')

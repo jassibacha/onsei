@@ -144,6 +144,13 @@ body.series-details .characters .card-character .right a {
 body.series-details .characters .card-character .left img {
   border-radius: calc(0.25rem - 1px) 0 0 calc(0.25rem - 1px);
 }
+body.series-details .characters .card-character .right a {
+  text-decoration: none;
+  font-weight: 500;
+}
+body.series-details .characters .card-character .right a:hover, body.series-details .characters .card-character .right a:focus {
+  text-decoration: underline;
+}
 body.series-details .characters .card-character .right img {
   border-radius: 0 calc(0.25rem - 1px) calc(0.25rem - 1px) 0;
 }
@@ -155,6 +162,7 @@ body.series-details .characters .card-character .popular-roles .title {
   text-transform: uppercase;
   letter-spacing: 2px;
   padding: 5px;
+  background-color: #e8e8e8;
 }
 body.series-details .characters .card-character .popular-roles .character {
   width: 20%;
@@ -165,6 +173,18 @@ body.series-details .characters .card-character .popular-roles .character .img-w
   overflow: hidden;
   width: auto;
   height: 100%;
+}
+body.series-details .characters .card-character .popular-roles .character .img-wrap img.character-img {
+  z-index: 3;
+}
+body.series-details .characters .card-character .popular-roles .character .img-wrap .blur-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-size: cover;
+  filter: blur(10px);
+  transform: scale(1.2);
 }
 body.series-details .characters .card-character .popular-roles .character .img-wrap .overlay {
   position: absolute;
