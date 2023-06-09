@@ -233,13 +233,31 @@ function createRoleCard(char) {
         }
         voiceActorId = char.voiceActors[0].id;
 
-        // Check if voice actor has characters
-        if (
-            char.voiceActors[0].characters &&
-            char.voiceActors[0].characters.nodes
-        ) {
-            // Iterate over characters
-            char.voiceActors[0].characters.nodes.forEach((character) => {
+        // // Check if voice actor has characters
+        // if (
+        //     char.voiceActors[0].characters &&
+        //     char.voiceActors[0].characters.nodes
+        // ) {
+        //     // Iterate over characters
+        //     char.voiceActors[0].characters.nodes.forEach((character) => {
+        //         // Only add character if id is not 36309 (Narrator)
+        //         if (character.id !== 36309) {
+        //             voiceActorCharacters += `
+        //             <div class="character w-20">
+        //                 <div class="img-wrap d-flex justify-content-center align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
+        //                     <img src="${character.image.medium}" alt="${character.name.full}" class="character-img img-fluid" />
+        //                     <div class="blur-bg" style="background-image:url('${character.image.medium}')"></div>
+        //                 </div>
+        //             </div>`;
+        //         }
+        //     });
+        // }
+
+        let count = 0;
+        // Iterate over characters
+        for (let character of char.voiceActors[0].characters.nodes) {
+            // Only add character if id is not 36309
+            if (character.id !== 36309) {
                 voiceActorCharacters += `
                 <div class="character w-20">
                     <div class="img-wrap d-flex justify-content-center align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
@@ -247,7 +265,12 @@ function createRoleCard(char) {
                         <div class="blur-bg" style="background-image:url('${character.image.medium}')"></div>
                     </div>
                 </div>`;
-            });
+                count++;
+            }
+            // Break the loop if count reaches 5
+            if (count >= 5) {
+                break;
+            }
         }
     }
 
