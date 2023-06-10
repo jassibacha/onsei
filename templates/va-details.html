@@ -8,9 +8,9 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
         <div class="row">
             <div class="col-5 col-sm-4 col-lg-2 offset-lg-2">
                 <img
-                    src="{{ output.va.image.large }}"
+                    data-src="{{ output.va.image.large }}"
                     alt="{{ output.va.name.full }}"
-                    class="img-fluid"
+                    class="lozad img-fluid"
                 />
             </div>
             <div class="col-7 col-sm-8 col-lg-6">
@@ -66,6 +66,13 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
 
 {% endblock %} {% block extra_js %}
 <script>
+
+    $(document).ready(function() {
+        // Create a global variable for the observer
+        window.observer = lozad();
+        window.observer.observe();
+    });
+
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
@@ -128,7 +135,11 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
 
         let sortedMedia = sortMedia(filteredMedia, sortBy, 'desc');
         displayCharacterMedia(sortedMedia, aniListUsername);
+        // After dynamically adding images, tell lozad to observe them
+        window.observer.observe();
     });
+
+    //observer.observe(); // Lozad - observes newly added elements as well
 
     document
         .getElementById('sort-select')
@@ -150,6 +161,10 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
             $('.roles').empty();
             // Then display the sorted media
             displayCharacterMedia(sortedMedia, aniListUsername);
+            // After dynamically adding images, tell lozad to observe them
+            window.observer.observe();
         });
+
+    //observer.observe(); // Lozad - observes newly added elements as well
 </script>
 {% endblock %}

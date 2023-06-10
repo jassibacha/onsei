@@ -57,13 +57,13 @@ function createMediaCard(media, aniListUsername = '') {
 
     // If character and character image exist, create character img tag
     if (character && character.image) {
-        characterImg = `<img src="${character.image.large}" alt="${character.name.full}" class="character-img img-fluid" />`;
+        characterImg = `<img data-src="${character.image.large}" alt="${character.name.full}" class="lozad character-img img-fluid" />`;
         characterImgUrl = `${character.image.large}`;
     }
 
     // If cover image exists, create series img tag
     if (media.node.coverImage) {
-        seriesImg = `<img src="${media.node.coverImage.medium}" alt="${media.node.title.romaji}" class="series-img img-fluid" />`;
+        seriesImg = `<img data-src="${media.node.coverImage.medium}" alt="${media.node.title.romaji}" class="lozad series-img img-fluid" />`;
     }
 
     // If character and character name exist, create h5 tag
