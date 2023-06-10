@@ -36,7 +36,7 @@ body.va-details .roles .card-role .img-wrap .blur-bg {
   transform: scale(1.2);
 }
 body.va-details .roles .card-role a.series {
-  color: rgb(78, 83, 86);
+  color: #8c5abf;
   text-decoration: none;
   font-weight: bold;
 }
@@ -121,7 +121,6 @@ body.series-details .hero .description .morecontent span {
 }
 body.series-details .hero .description .morecontent .read-more {
   display: inline;
-  color: blue;
   cursor: pointer;
 }
 body.series-details .hero .description .moreellipses {

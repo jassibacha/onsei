@@ -300,7 +300,7 @@ def va_search():
 
     # Send the search query to the AniList API
     response_data = search_voice_actors(query, app)
-    print('RESPONSE DATA:', response_data)
+    #print('RESPONSE DATA:', response_data)
     staff = response_data['data']['va']
     status_code = response_data['data']['status_code']
 
@@ -314,12 +314,11 @@ def va_search():
     for va in staff:
         valid_characters = [character for character in va['characters']['nodes'] if 'id' in character and character['id'] != 36309]
 
-        # valid_characters = [character for character in va['characters']['nodes'] if character['id'] != 36309]
         if valid_characters:
             va['characters']['nodes'] = valid_characters[:5]  # Limit the number of characters to 5
             filtered_staff.append(va)
 
-    print('FILTERED STAFF:', filtered_staff)
+    #print('FILTERED STAFF:', filtered_staff)
     # Send the results to the search results page
     return render_template('va-search.html', staff=filtered_staff, query=query)
 

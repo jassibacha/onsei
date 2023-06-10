@@ -121,7 +121,11 @@ function createMediaCard(media, aniListUsername = '') {
                         <div class="">
                             <div class="title">Year</div>
                             <div class="year">
-                            ${media.node.seasonYear}
+                            ${
+                                media.node.seasonYear
+                                    ? media.node.seasonYear
+                                    : 'N/A'
+                            }
                             </div>
                             <div class="title">Users</div>
                             <div class="popularity">
