@@ -52,8 +52,8 @@ endblock %} {% block content %}
         <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
             <a href="/va/{{ va.id }}" class="card card-staff flex-row mb-3">
                 <img
-                    class="card-img-left card-img-poster"
-                    src="{{ va.image.medium }}"
+                    class="lozad card-img-left card-img-poster"
+                    data-src="{{ va.image.medium }}"
                     alt="{{ va.name.full }} Photo"
                 />
                 <div class="card-body">
@@ -70,13 +70,13 @@ endblock %} {% block content %}
                                 data-bs-title="{{character.name.full}}"
                             >
                                 <img
-                                    src="{{character.image.medium}}"
+                                    data-src="{{character.image.medium}}"
                                     alt="{{character.name.full}}"
-                                    class="character-img img-fluid"
+                                    class="lozad character-img img-fluid"
                                 />
                                 <div
-                                    class="blur-bg"
-                                    style="background-image:url('{{character.image.medium}}')"
+                                    class="blur-bg lozad"
+                                    data-background-image="{{character.image.medium}}"
                                 ></div>
                             </div>
                         </div>
@@ -109,6 +109,12 @@ endblock %} {% block content %}
 </div>
 #} {% endblock %} {% block extra_js %}
 <script>
+    $(document).ready(function () {
+        // Create a global variable for the observer
+        window.observer = lozad();
+        window.observer.observe();
+    });
+
     const tooltipTriggerList = document.querySelectorAll(
         '[data-bs-toggle="tooltip"]'
     );
