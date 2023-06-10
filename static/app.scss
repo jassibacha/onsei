@@ -3,10 +3,59 @@ $linkHover: #7949ab;
 $lightPurple: #cba0f8;
 $lightGold: #ffed8f;
 
+a {
+    color: $linkPurple;
+}
+a:hover,
+a:focus {
+    color: $linkHover;
+}
+
+.hero {
+    background-color: #4158d0;
+    background-image: linear-gradient(43deg, #4158d0 0%, #c850c0 100%);
+    // background-image: linear-gradient(
+    //     43deg,
+    //     #4158d0 0%,
+    //     #c850c0 46%,
+    //     #ffcc70 100%
+    // );
+
+    // background-color: #96b5d0;
+    // background-image: linear-gradient(135deg, #96b5d0 0%, #9495c9 100%);
+}
+
+footer {
+    border-top: 1px solid #d6d6d5;
+    .rights {
+        @media (max-width: 500px) {
+            display: none;
+        }
+    }
+}
+
+.placehold {
+    color: #a09f9f;
+}
+
 @media (min-width: 1200px) and (max-width: 1399px) {
     body.va-details .col-xl-2 {
         flex: 0 0 auto;
         width: 20%;
+    }
+}
+
+body.va-search {
+    a.card-staff {
+        color: rgb(33, 37, 41);
+        text-decoration: none;
+        &:hover,
+        &:focus {
+            background-color: var(--bs-gray-100);
+        }
+        h5 {
+            color: rgb(33, 37, 41);
+        }
     }
 }
 
@@ -231,53 +280,57 @@ body.series-details {
                     padding: 5px;
                     background-color: #e8e8e8;
                 }
-                .character {
-                    width: 20%;
-                    .img-wrap {
-                        position: relative;
-                        aspect-ratio: 3 / 4;
-                        overflow: hidden;
-                        width: auto;
-                        height: 100%;
 
-                        //max-width: 200px;
-                        img.character-img {
-                            z-index: 3;
-                        }
-                        .blur-bg {
-                            position: absolute;
-                            width: 100%;
-                            height: 100%;
-                            z-index: 1;
-                            background-size: cover;
-                            filter: blur(10px);
-                            transform: scale(1.2);
-                        }
-
-                        .overlay {
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 100%;
-                            background-color: rgba(0, 0, 0, 0.6);
-                            color: #fff;
-                            display: flex;
-                            align-items: center;
-                            text-align: center;
-                            justify-content: center;
-                            opacity: 0;
-                            transition: opacity 0.3s;
-                        }
-                        &:hover {
-                            .overlay {
-                                opacity: 1;
-                            }
-                        }
-                    }
-                }
                 img {
                     // width:20%;
+                }
+            }
+        }
+    }
+}
+
+.pop-chars {
+    .character {
+        width: 20%;
+        .img-wrap {
+            position: relative;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            width: auto;
+            height: 100%;
+
+            //max-width: 200px;
+            img.character-img {
+                z-index: 3;
+            }
+            .blur-bg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+                background-size: cover;
+                filter: blur(10px);
+                transform: scale(1.2);
+            }
+
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                display: flex;
+                align-items: center;
+                text-align: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+            &:hover {
+                .overlay {
+                    opacity: 1;
                 }
             }
         }

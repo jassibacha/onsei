@@ -103,7 +103,7 @@ function createMediaCard(media, aniListUsername = '') {
     let html = `
         <div class="col-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
             <div class="card card-role mb-3">
-                <div class="card-img-top img-wrap d-flex align-items-center">
+                <div class="card-img-top img-wrap d-flex align-items-center justify-content-center">
                     ${characterImg}
                     ${seriesImg}
                     <div class="blur-bg" style="background-image:url('${characterImgUrl}')"></div>
@@ -288,7 +288,7 @@ function createRoleCard(char) {
                 </div>
                 <div class="popular-roles">
                     <div class="title">Popular Roles:</div>
-                    <div class="d-flex flex-row">
+                    <div class="pop-chars d-flex flex-row">
                     ${voiceActorCharacters}
                     </div>
                 </div>

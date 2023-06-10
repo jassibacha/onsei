@@ -1,13 +1,20 @@
 {% extends "base.html" %} {% block title %}VA Search - Onsei{% endblock %} {%
-block body_class %}va-search{% endblock %} {% block content %}
-<div class="hero">
+block body_class %}va-search{% endblock %} {% block content_class %}mb-5{%
+endblock %} {% block content %}
+<div class="hero py-5 mb-5">
     <div class="container">
         <div class="row">
-            <div class="col">
-                <h2>Select Voice Actor</h2>
+            <div
+                class="col-12 col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 text-white text-center"
+            >
+                <h2>Search Voice Actors</h2>
+                <p>
+                    Enter a voice actor's name below and discover their roles in
+                    various series.
+                </p>
                 <form action="/va/search" method="POST">
-                    <div class="form-group">
-                        <label for="va-search">Search:</label>
+                    {# <label for="va-search">Search:</label> #}
+                    <div class="input-group">
                         <input
                             type="text"
                             class="form-control"
@@ -23,18 +30,18 @@ block body_class %}va-search{% endblock %} {% block content %}
                             endif
                             %}
                         />
+                        <button type="submit" class="btn btn-warning">
+                            Search
+                        </button>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        Search
-                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-{% if staff %}
 <div class="container">
+    {% if staff %}
     <div class="row mt-4">
         <div class="col">
             <h3>Search Results:</h3>
@@ -43,30 +50,70 @@ block body_class %}va-search{% endblock %} {% block content %}
     <div class="row va">
         {% for va in staff %}
         <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
-            <div class="card card-staff flex-row mb-3">
+            <a href="/va/{{ va.id }}" class="card card-staff flex-row mb-3">
                 <img
                     class="card-img-left card-img-poster"
                     src="{{ va.image.medium }}"
                     alt="{{ va.name.full }} Photo"
                 />
                 <div class="card-body">
-                    <h5 class="card-title h4-sm">{{ va.name.full }}</h5>
-                    <div>
-                        {% for character in va.characters.nodes %}
+                    <h5 class="card-title mb-1">{{ va.name.full }}</h5>
+                    <h6 class="mb-1">Popular Characters:</h6>
+                    <div class="pop-chars d-flex flex-row">
+                        {% for character in va.characters.nodes %} {#
                         <h6>Character: {{ character.name.full }}</h6>
+                        #}
+                        <div class="character w-20">
+                            <div
+                                class="img-wrap d-flex justify-content-center align-items-center"
+                                data-bs-toggle="tooltip"
+                                data-bs-title="{{character.name.full}}"
+                            >
+                                <img
+                                    src="{{character.image.medium}}"
+                                    alt="{{character.name.full}}"
+                                    class="character-img img-fluid"
+                                />
+                                <div
+                                    class="blur-bg"
+                                    style="background-image:url('{{character.image.medium}}')"
+                                ></div>
+                            </div>
+                        </div>
                         {% endfor %}
                     </div>
+                    {#
                     <a href="/va/{{ va.id }}" class="btn btn-primary">
                         View Staff Member
                     </a>
+                    #}
                 </div>
-            </div>
+            </a>
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="row mt-4">
+        <div class="col text-center">
+            <div class="placehold">
+                <h3>Results Go Here</h3>
+                <p>Search for a Voice Actor!</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
-{% endif %}
+{#
 <div>
     <pre>{{ staff }}</pre>
 </div>
+#} {% endblock %} {% block extra_js %}
+<script>
+    const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+    );
+    const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+</script>
 {% endblock %}

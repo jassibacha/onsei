@@ -1,9 +1,47 @@
+a {
+  color: #8c5abf;
+}
+
+a:hover,
+a:focus {
+  color: #7949ab;
+}
+
+.hero {
+  background-color: #4158d0;
+  background-image: linear-gradient(43deg, #4158d0 0%, #c850c0 100%);
+}
+
+footer {
+  border-top: 1px solid #d6d6d5;
+}
+@media (max-width: 500px) {
+  footer .rights {
+    display: none;
+  }
+}
+
+.placehold {
+  color: #a09f9f;
+}
+
 @media (min-width: 1200px) and (max-width: 1399px) {
   body.va-details .col-xl-2 {
     flex: 0 0 auto;
     width: 20%;
   }
 }
+body.va-search a.card-staff {
+  color: rgb(33, 37, 41);
+  text-decoration: none;
+}
+body.va-search a.card-staff:hover, body.va-search a.card-staff:focus {
+  background-color: var(--bs-gray-100);
+}
+body.va-search a.card-staff h5 {
+  color: rgb(33, 37, 41);
+}
+
 body.va-details .hero {
   background-color: rgb(239, 239, 239);
 }
@@ -179,20 +217,20 @@ body.series-details .characters .card-character .popular-roles .title {
   padding: 5px;
   background-color: #e8e8e8;
 }
-body.series-details .characters .card-character .popular-roles .character {
+.pop-chars .character {
   width: 20%;
 }
-body.series-details .characters .card-character .popular-roles .character .img-wrap {
+.pop-chars .character .img-wrap {
   position: relative;
   aspect-ratio: 3/4;
   overflow: hidden;
   width: auto;
   height: 100%;
 }
-body.series-details .characters .card-character .popular-roles .character .img-wrap img.character-img {
+.pop-chars .character .img-wrap img.character-img {
   z-index: 3;
 }
-body.series-details .characters .card-character .popular-roles .character .img-wrap .blur-bg {
+.pop-chars .character .img-wrap .blur-bg {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -201,7 +239,7 @@ body.series-details .characters .card-character .popular-roles .character .img-w
   filter: blur(10px);
   transform: scale(1.2);
 }
-body.series-details .characters .card-character .popular-roles .character .img-wrap .overlay {
+.pop-chars .character .img-wrap .overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -216,9 +254,10 @@ body.series-details .characters .card-character .popular-roles .character .img-w
   opacity: 0;
   transition: opacity 0.3s;
 }
-body.series-details .characters .card-character .popular-roles .character .img-wrap:hover .overlay {
+.pop-chars .character .img-wrap:hover .overlay {
   opacity: 1;
 }
+
 .card-img-top {
   width: auto;
   height: 100%;

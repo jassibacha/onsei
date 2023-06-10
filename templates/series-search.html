@@ -1,14 +1,20 @@
 {% extends "base.html" %} {% block title %}Anime Series Search - Onsei{%
 endblock %} {% block body_class %}series-search{% endblock %} {% block
 content_class %}mb-5{% endblock %} {% block content %}
-<div class="hero py-5">
+<div class="hero py-5 mb-5">
     <div class="container">
         <div class="row">
-            <div class="col">
-                <h2>Search Series</h2>
+            <div
+                class="col-12 col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 text-white text-center"
+            >
+                <h2>Search Anime Series</h2>
+                <p>
+                    Enter a title below to explore its characters & voice
+                    actors.
+                </p>
                 <form action="/series/search" method="POST">
-                    <div class="form-group">
-                        <label for="series-search">Search:</label>
+                    <div class="input-group">
+                        {# <label for="series-search">Search:</label> #}
                         <input
                             type="text"
                             class="form-control"
@@ -24,18 +30,18 @@ content_class %}mb-5{% endblock %} {% block content %}
                             endif
                             %}
                         />
+                        <button type="submit" class="btn btn-warning">
+                            Search
+                        </button>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        Search
-                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-{% if series %}
 <div class="container">
+    {% if series %}
     <div class="row mt-4">
         <div class="col">
             <h3>Search Results:</h3>
@@ -74,5 +80,11 @@ content_class %}mb-5{% endblock %} {% block content %}
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="placehold">
+        <h3>Results Go Here</h3>
+        <p>Search for an Anime Series!</p>
+    </div>
+    {% endif %}
 </div>
-{% endif %} {% endblock %}
+{% endblock %}
