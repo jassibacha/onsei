@@ -64,6 +64,12 @@ content %}
 
 {% endblock %} {% block extra_js %}
 <script>
+    $(document).ready(function () {
+        // Create a global variable for the observer
+        window.observer = lozad();
+        window.observer.observe();
+    });
+
     var seriesId = $('body').data('series-id');
     console.log('Script is running, series id:', seriesId);
 
@@ -137,6 +143,8 @@ content %}
         seriesMedia = media;
 
         displaySeriesRoles(seriesMedia);
+        // After dynamically adding images, tell lozad to observe them
+        window.observer.observe();
     });
 </script>
 {% endblock %}

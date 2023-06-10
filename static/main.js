@@ -249,8 +249,8 @@ function createRoleCard(char) {
                 voiceActorCharacters += `
                 <div class="character w-20">
                     <div class="img-wrap d-flex justify-content-center align-items-center" data-bs-toggle="tooltip" data-bs-title="${character.name.full}">
-                        <img src="${character.image.medium}" alt="${character.name.full}" class="character-img img-fluid" />
-                        <div class="blur-bg" style="background-image:url('${character.image.medium}')"></div>
+                        <img data-src="${character.image.medium}" alt="${character.name.full}" class="lozad character-img img-fluid" />
+                        <div class="blur-bg lozad" data-background-image="${character.image.medium}"></div>
                     </div>
                 </div>`;
                 count++;
@@ -269,7 +269,7 @@ function createRoleCard(char) {
                 <div class="card-top d-flex flex-row text-bg-dark">
                     <div class="col-6 left">
                         <div class="char-img-wrap d-flex align-items-center justify-content-center">
-                        <img src="${characterImage}" class="char-img img-fluid" alt="${characterName}" />
+                        <img data-src="${characterImage}" class="lozad char-img img-fluid" alt="${characterName}" />
                         </div>
                         <span class="character-text lh-sm ps-2 pe-1">
                         ${characterName}
@@ -281,7 +281,7 @@ function createRoleCard(char) {
                         <a href="/va/${voiceActorId}" class="justify-content-end text-end text-white">
                             <span class="character-text lh-sm text-end ps-1 pe-2">${voiceActorName}</span>
                             <div class="va-img-wrap d-flex align-items-center justify-content-center">
-                            <img src="${voiceActorImage}" class="va-img img-fluid" alt="${voiceActorName}" />
+                            <img data-src="${voiceActorImage}" class="lozad va-img img-fluid" alt="${voiceActorName}" />
                             </div>
                         </a>
                     </div>
