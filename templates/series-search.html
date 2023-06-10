@@ -55,7 +55,7 @@ content_class %}mb-5{% endblock %} {% block content %}
                 <div class="card card-series flex-row mb-3">
                     #}
                     <img
-                        class="card-img-left card-img-poster"
+                        class="lozad card-img-left card-img-poster"
                         data-src="{{ s.coverImage.medium }}"
                         alt="{{ s.title.english or s.title.romaji }} Poster"
                     />
@@ -81,10 +81,22 @@ content_class %}mb-5{% endblock %} {% block content %}
         {% endfor %}
     </div>
     {% else %}
-    <div class="placehold">
-        <h3>Results Go Here</h3>
-        <p>Search for an Anime Series!</p>
+    <div class="row mt-4">
+        <div class="col text-center">
+            <div class="placehold">
+                <h3>Results Go Here</h3>
+                <p>Search for an Anime Series!</p>
+            </div>
+        </div>
     </div>
     {% endif %}
 </div>
+{% endblock %} {% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Create a global variable for the observer
+        window.observer = lozad();
+        window.observer.observe();
+    });
+</script>
 {% endblock %}
