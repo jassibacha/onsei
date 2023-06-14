@@ -127,6 +127,10 @@ def signup():
     and re-present form.
     """
 
+    if g.user:
+        # User is already logged in, redirect to home page
+        return redirect("/")
+
     form = SignUpForm()
 
     if form.validate_on_submit():
@@ -146,7 +150,7 @@ def signup():
             return render_template('users/signup.html', form=form)
 
         do_login(user)
-
+        flash(f'Signup Successful, Welcome {user.username}!', 'success')
         return redirect("/")
 
     else:
@@ -157,6 +161,10 @@ def signup():
 def login():
     """Handle user login."""
 
+    if g.user:
+        # User is already logged in, redirect to home page
+        return redirect("/")
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -166,8 +174,8 @@ def login():
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
             return redirect("/")
-
-        flash("Invalid credentials.", 'danger')
+        else:
+            flash("Unsuccessful login.", 'danger')
 
     return render_template('users/login.html', form=form)
 
@@ -175,6 +183,10 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
+    if not g.user:
+        # User is not logged in, redirect to home page
+        return redirect("/")
+        
     do_logout()
     flash(f"Successfully logged out.", "danger")
     return redirect("/")

@@ -1,13 +1,28 @@
+import re
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SubmitField
+from wtforms import StringField, PasswordField, TextAreaField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp
 
+class PasswordComplexity(object):
+    def __init__(self, message=None):
+        if not message:
+            message = u'Password must include at least one of each: uppercase letter, lowercase letter, digit, and special character.'
+        self.message = message
+
+    def __call__(self, form, field):
+        password = field.data
+        if not (re.search(r'[A-Z]', password) and 
+                re.search(r'[a-z]', password) and 
+                re.search(r'\d', password) and 
+                re.search(r'[@$!%*?&]', password)):
+            raise ValidationError(self.message)
 
 
 class SignUpForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20), Regexp(r'^[\w.@+-]+$')])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=255)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8), Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$')])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8), PasswordComplexity()])
+    # password = PasswordField('Password', validators=[DataRequired(), Length(min=8), Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$')])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     #submit = SubmitField('Sign Up')
 

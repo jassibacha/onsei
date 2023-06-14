@@ -23,4 +23,6 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+    SECRET_KEY = 'notsosecret'
+    WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'postgresql:///onsei-test'

@@ -2,7 +2,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <h1>Register</h1>
+            <h1>Sign Up Now</h1>
             <form method="POST" id="user_form">
                 {{ form.hidden_tag() }} {% for field in form if
                 field.widget.input_type != 'hidden' %}
@@ -10,10 +10,10 @@
                     <label for="{{ field.id }}" class="form-label"
                         >{{ field.label.text }}</label
                     >
-                    {% for error in field.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                    {% endfor %} {{ field(placeholder=field.label.text,
-                    class="form-control", id=field.id) }}
+                    {{ field(placeholder=field.label.text, class="form-control",
+                    id=field.id) }} {% for error in field.errors %}
+                    <small class="text-danger d-block">{{ error }}</small>
+                    {% endfor %}
                 </div>
                 {% endfor %}
                 <button class="btn btn-primary btn-lg btn-block">

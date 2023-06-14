@@ -5,3 +5,4 @@ secrets.py
 secret.py
 .env
 /migrations/
+.vscode/
