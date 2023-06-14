@@ -27,6 +27,7 @@ app.app_context().push()
 def inject_is_prod():
     # We're adding the 'is_prod' variable, which is True if the app is running in production.
     # This variable will be accessible in all templates, allowing us to conditionally add or remove things based on the environment.
+    # return dict(is_prod=app.config['FLASK_ENV'] == 'production')
     return dict(is_prod=app.config['ENV'] == 'production')
 
 
@@ -34,6 +35,14 @@ def inject_is_prod():
 # 1. I tried making a Procfile  REMOVED
 # 2. I added app.app_context().push()
 # 3. Manually specified a version of setuptools instead of letting it install as a dependency REMOVED
+
+# # Use ENV to decide which Config to use
+# if app.config['FLASK_ENV'] == 'production':
+#     app.config.from_object(ProductionConfig)
+# elif app.config['FLASK_ENV'] == 'development':
+#     app.config.from_object(DevelopmentConfig)
+# elif app.config['FLASK_ENV'] == 'testing':
+#     app.config.from_object(TestingConfig)
 
 # Use ENV to decide which Config to use
 if app.config['ENV'] == 'production':
@@ -147,6 +156,7 @@ def signup():
             return render_template('users/signup.html', form=form)
 
         do_login(user)
+        flash(f"Welcome {user.username}!")
 
         return redirect("/")
 
