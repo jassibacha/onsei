@@ -81,7 +81,7 @@ class RoutesTestCase(TestCase):
             self.assertIn('Signup Successful', str(resp.data))
 
     def test_failed_signup_weakpass(self):
-        """ Does signup work """
+        """ Fail signup with a weak password """
 
         with self.client as c: 
             resp = c.get('/signup')
@@ -107,14 +107,45 @@ class RoutesTestCase(TestCase):
             resp = c.get('/login')
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('Welcome', str(resp.data))
+            self.assertIn('Login', str(resp.data))
 
         with self.client as c: 
             form_data = {'username': 'testuser', 'password': 'Password8784$$'}
             resp = c.post('/login', data=form_data, follow_redirects=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('successful', str(resp.data))
+            self.assertIn('Logout', str(resp.data)) #Confirm Logout button
+
+    def test_failed_login(self):
+        """ Ensures login fails accordingly when given incorrect password """
+
+        with self.client as c: 
+            form_data = {'username': 'testuser5', 'password': 'wrongpassword'}
+            resp = c.post('/login', data=form_data, follow_redirects=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Unsuccessful login', str(resp.data))
+
+    def test_logout(self):
+        """ Ensures login works """
+
+        with self.client as c:
+            resp = c.get('/login')
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Login', str(resp.data))
+
+        with self.client as c: 
+            form_data = {'username': 'testuser', 'password': 'Password8784$$'}
+            resp = c.post('/login', data=form_data, follow_redirects=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Logout', str(resp.data))
+
+        with self.client as c: 
+            resp = c.get('/logout', follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Successfully logged out', str(resp.data))
 
 
 # class AuthTestCase(BaseTestCase):
