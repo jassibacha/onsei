@@ -24,6 +24,3 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'postgresql:///onsei-test'
-    SECRET_KEY = 'testing-secret-key'  # set a testing secret key
-    DEBUG_TB_ENABLED = False  # Disable debug toolbar in testing
-    DEBUG_TB_INTERCEPT_REDIRECTS = False
