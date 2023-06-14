@@ -85,11 +85,10 @@ def do_login(user):
 
     session[CURR_USER_KEY] = user.id
 
-    if user.anilist_profile_accessible:
-        app.logger.debug('******* LOGIN STARTED *******')
-        app.logger.debug('LIST LAST UPDATED AT: %s', user.anime_list_updated_at)
-        app.logger.debug('CURRENT DATE/TIME: %s', datetime.utcnow())
-        app.logger.debug('*****************************')
+    app.logger.debug('******* LOGIN STARTED *******')
+    app.logger.debug('LIST LAST UPDATED AT: %s', user.anime_list_updated_at)
+    app.logger.debug('CURRENT DATE/TIME: %s', datetime.utcnow())
+    app.logger.debug('*****************************')
 
     # Check if profile is accessible (database field) and if the current list data is more than 7 days old
     if user.anilist_profile_accessible and (not user.anime_list_updated_at or datetime.utcnow() - user.anime_list_updated_at > timedelta(days=LIST_EXPIRY)):

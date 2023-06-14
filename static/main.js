@@ -106,7 +106,7 @@ function createMediaCard(media, aniListUsername = '') {
                 <div class="card-img-top img-wrap d-flex align-items-center justify-content-center">
                     ${characterImg}
                     ${seriesImg}
-                    <div class="blur-bg lozad" data-background-image="${characterImgUrl}"></div>
+                    <div class="blur-bg" data-background-image="${characterImgUrl}"></div>
                 </div>
                 <div class="card-body">
                     <div class="name lh-sm mb-1">
