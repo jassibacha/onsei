@@ -9,10 +9,6 @@ from models import db, User
 from app import app
 from datetime import datetime
 
-import logging
-
-logging.basicConfig(level=logging.INFO)
-
 
 class RoutesTestCase(TestCase):
 

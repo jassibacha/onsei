@@ -82,6 +82,9 @@ class User(db.Model):
         if existing_user:
             raise IntegrityError("Username or email already in use", orig=None, params=None)
 
+        # Raise ValueError if username or email is None
+        if username is None or email is None:
+            raise ValueError("Username and email must not be empty")
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
