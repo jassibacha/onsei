@@ -4,7 +4,7 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
 }}"{% endblock %} {% block content %}
 
 <div class="hero py-5 mb-3">
-    <div class="container">
+    <div class="container text-white">
         <div class="row">
             <div class="col-5 col-sm-4 col-lg-2 offset-lg-2">
                 <img
@@ -126,10 +126,19 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
             $('#sort-select').append($('<option>', { value : 'userListScore' }).text('Sort by user list score'));
             $('#sort-select').append($('<option>', { value : 'userListSeasonYear' }).text('Sort by user list season year'));
 
-            sortBy = 'node.userListScore';
-            filteredMedia = charMedia.filter(media => media.node.onUserList);
-            $('#sort-select').val('userListScore');
-            $(".sort-msg").text("AniList User List Found!");
+            // Check if there is at least one media with a user score
+            let hasMediaWithUserScore = charMedia.some(media => media.node.onUserList && media.node.userListScore !== null);
+
+            if (hasMediaWithUserScore) {
+                sortBy = 'node.userListScore';
+                filteredMedia = charMedia.filter(media => media.node.onUserList);
+                $('#sort-select').val('userListScore');
+                $(".sort-msg").text("AniList User List Found!");
+            } else {
+                sortBy = 'node.seasonYear';
+                filteredMedia = charMedia;
+                $(".sort-msg").text("No media matches AniList list. Default sorting applied.");
+            }
             $(".sort-msg").animate({ opacity: 1 }, 500);
         }
 
