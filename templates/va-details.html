@@ -43,7 +43,7 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
     <div class="row d-flex align-items-end mb-3">
         <div class="col-sm-4"><h3 class="mb-0">Roles:</h3></div>
         <div class="col-sm-8 text-sm-end">
-            <div class="sort-msg">Test text</div>
+            <div class="badge sort-msg"></div>
             <select id="sort-select">
                 <option value="seasonYear">Sort by season year</option>
                 <option value="popularity">Sort by popularity</option>
@@ -133,11 +133,13 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
                 sortBy = 'node.userListScore';
                 filteredMedia = charMedia.filter(media => media.node.onUserList);
                 $('#sort-select').val('userListScore');
-                $(".sort-msg").text("AniList User List Found!");
+                $(".sort-msg").addClass('text-bg-success');
+                $(".sort-msg").text("AL List series found. Sorting.");
             } else {
                 sortBy = 'node.seasonYear';
                 filteredMedia = charMedia;
-                $(".sort-msg").text("No media matches AniList list. Default sorting applied.");
+                $(".sort-msg").addClass('text-bg-secondary');
+                $(".sort-msg").text("No matches on AL list. Default sort set.");
             }
             $(".sort-msg").animate({ opacity: 1 }, 500);
         }
@@ -146,6 +148,10 @@ content_class %}mb-5{% endblock %} {% block body_data %}data-va-id="{{ va_id
         displayCharacterMedia(sortedMedia, aniListUsername);
         // After dynamically adding images, tell lozad to observe them
         window.observer.observe();
+
+        setTimeout(function() {
+            $(".sort-msg").animate({ opacity: 0 }, 500);
+        }, 5000);  // After 5 seconds, run this function
     });
 
     //observer.observe(); // Lozad - observes newly added elements as well
