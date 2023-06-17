@@ -247,6 +247,15 @@ class RoutesTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('Ayuru Ohashi', str(resp.data)) 
 
+    def test_empty_va_details(self):
+        """Test a broken va details page"""
+
+        with self.client as c:
+            resp = c.get('/va/95123999', follow_redirects=True)
+
+            self.assertEqual(resp.status_code, 404)
+            self.assertIn('404 Page Not Found', str(resp.data))
+
 
     def test_series_search(self):
         """Does the series search work?"""
@@ -272,7 +281,16 @@ class RoutesTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn('Kimetsu no Yaiba', str(resp.data)) 
-            self.assertIn('SPRING', str(resp.data)) 
+            self.assertIn('SPRING', str(resp.data))
+
+    def test_empty_series_details(self):
+        """Test a broken series details page"""
+
+        with self.client as c:
+            resp = c.get('/series/99995123999', follow_redirects=True)
+
+            self.assertEqual(resp.status_code, 404)
+            self.assertIn('404 Page Not Found', str(resp.data)) 
 
     def test_get_series_roles(self):
         """Test our API endpoint to pull data for a series to front-end"""

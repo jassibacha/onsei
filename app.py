@@ -383,16 +383,16 @@ def va_details(va_id):
     # Send the GraphQL query to the AniList API
     response = make_api_request(va_query, variables, app)
 
-    # Process the response
-    if response is not None:
+    
+    if response is None or response['data']['Staff'] is None:
+        # handle the case when the staff is not found
+        abort(404)
+    else:
+        # Process the response
         va = response['data']['Staff']
 
         app.logger.debug('&&&&&&&&&&& RESPONSE FOR VA: &&&&&&&&&&&' )
         app.logger.debug(va)
-
-        # Fetch all characterMedia series for the VA
-        # character_media = fetch_all_character_media(va_id, app)
-
 
         # Check if user profile is accessible and anime_list isn't empty, if so fetch anime list
         anime_list = g.user.anime_list if g.user and g.user.anilist_profile_accessible and g.user.anime_list else None
@@ -403,14 +403,8 @@ def va_details(va_id):
             'anime_list': anime_list if anime_list else [] # Empty list if anime_list not avail
         }
 
-        # If anime_list isn't empty, then add it to output
-        # if anime_list:
-        #     output['anime_list'] = anime_list
-
 
         return render_template('va-details.html', va_id=va_id, output=output)
-
-    return render_template('va-details.html', va_id=va_id)
     
 
 
@@ -456,7 +450,8 @@ def series_search():
 def series_details(series_id):
     """Grab the series details by AniList ID"""
 
-    # Simplified query grabbing ONLY the seriesstaff info for the ID. No pagination needed. We're grabbing the series/character data in a separate call.
+    # Simplified query grabbing ONLY the series info for the ID. 
+    # No pagination needed. We're grabbing the series/character data in a separate call.
     series_query = '''
     query ($id: Int) {
 		Media(id: $id) {
@@ -501,31 +496,23 @@ def series_details(series_id):
     # Send the GraphQL query to the AniList API
     response = make_api_request(series_query, variables, app)
 
-    # Process the response
-    if response is not None:
+    # Check if Media is None, 404 page if so
+    if response is None or response['data']['Media'] is None:
+        # handle the case when the series is not found
+        abort(404)
+    else:
+        # Process the response normally
         series = response['data']['Media']
 
-        app.logger.debug('&&&&&&&&&&& RESPONSE FOR SERIES: &&&&&&&&&&&' )
-        app.logger.debug(series)
+        app.logger.debug('########### RESPONSE FOR SERIES SUCCESSFUL ###########' )
+        #app.logger.debug(series)
 
-        # Fetch all characterMedia series for the VA
-        # character_media = fetch_all_character_media(va_id, app)
-
-        # Check if user profile is accessible and anime_list isn't empty, if so fetch anime list
-        
         # Construct the output dictionary
         output = {
             'series': series
         }
 
-        # If anime_list isn't empty, then add it to output
-        # if anime_list:
-        #     output['anime_list'] = anime_list
-
-
         return render_template('series-details.html', series_id=series_id, output=output)
-
-    return render_template('series-details.html', series_id=series_id)
 
 
 @app.route('/api/series_roles/<int:series_id>', methods=['GET'])
@@ -537,6 +524,12 @@ def get_series_roles(series_id):
         abort(403)
     data = fetch_series_characters_roles(series_id, app)
     return jsonify(data)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """404 Page Template"""
+    return render_template('404.html'), 404
 
 
 # Register the time_since filter as a decorator
