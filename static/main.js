@@ -262,6 +262,17 @@ function createRoleCard(char) {
         }
     }
 
+    let voiceActorHtml = '';
+    if (voiceActorName !== 'N/A') {
+        voiceActorHtml = `
+            <a href="/va/${voiceActorId}" class="justify-content-end text-end text-white">
+                <span class="character-text lh-sm text-end ps-1 pe-2">${voiceActorName}</span>
+                <div class="va-img-wrap d-flex align-items-center justify-content-center">
+                    <img data-src="${voiceActorImage}" class="lozad va-img img-fluid" alt="${voiceActorName}" />
+                </div>
+            </a>`;
+    }
+
     // <div class="col-sm-6 col-lg-4 mb-3">
     let html = `
         <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
@@ -278,12 +289,7 @@ function createRoleCard(char) {
                         
                     </div>
                     <div class="col-6 right">
-                        <a href="/va/${voiceActorId}" class="justify-content-end text-end text-white">
-                            <span class="character-text lh-sm text-end ps-1 pe-2">${voiceActorName}</span>
-                            <div class="va-img-wrap d-flex align-items-center justify-content-center">
-                            <img data-src="${voiceActorImage}" class="lozad va-img img-fluid" alt="${voiceActorName}" />
-                            </div>
-                        </a>
+                        ${voiceActorHtml}
                     </div>
                 </div>
                 <div class="popular-roles">
