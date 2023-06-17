@@ -294,15 +294,15 @@ def delete_user():
 # App Routes
 @app.route('/')
 def search_form():
-    """Search for a voice actor"""
+    """General homepage"""
 
-    return redirect(url_for('va_search'))
+    return render_template('home.html')
 
 
 
 @app.route('/va/search', methods=['GET', 'POST'])
 def va_search():
-    
+    """Search for a voice actor"""
     query = request.form.get('va-search')
     print('QUERY:', query)
 

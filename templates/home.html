@@ -1,0 +1,98 @@
+{% extends "base.html" %} {% block title %}Onsei - Search Anime Voice Actors &
+Series{% endblock %} {% block body_class %}home{% endblock %} {% block
+content_class %}mb-5{% endblock %} {% block content %}
+
+<div class="hero spike py-5 mb-3">
+    <div class="hero-bg"></div>
+    <div class="container">
+        <div class="row">
+            <div
+                class="col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3 text-center text-white"
+            >
+                <h1>Unveil The Voices Behind Your Favorite Anime</h1>
+                <p>
+                    Discover, Filter, and Sort Characters and Voice Actors with
+                    Onsei
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container my-5 text-center">
+    <div class="row">
+        <div
+            class="col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3"
+        >
+            <p>
+                Experience the joy of uncovering the talent that brings your
+                favorite anime characters to life. Onsei empowers you to
+                effortlessly track down characters, series, and voice actors. Do
+                you recognize a familiar voice in a new series? It's never been
+                easier to find out who it is and what other characters they've
+                played.
+            </p>
+            <p>
+                Immerse yourself in the world of anime with Onsei, your
+                dedicated companion to exploring the voices behind the
+                characters you love. Ever recognized a familiar voice in a new
+                series? Our tools make it easy to uncover who it is and which
+                other characters they've portrayed.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="personalize my-5 py-5">
+    <div class="fill-bg"></div>
+    <div class="container text-center">
+        <div class="row">
+            <div
+                class="d-flex flex-row flex-wrap align-items-center justify-content-center col-sm-12 col-md-12 col-lg-5 col-xl-4 offset-xl-1"
+            >
+                <div>
+                    <h2>Personalized Results</h2>
+                    <p>
+                        It's great to recognize a voice actor, but it can be
+                        annoying seeing a long list of every character they've
+                        ever voiced. Why can't we easily filter those results to
+                        see the characters of series we've seen?
+                    </p>
+                    <p>
+                        <a href="/signup">Sign up today</a> and link your
+                        AniList account to unlock a new world of
+                        personalization. Get filtered voice actor results based
+                        on your completed & current anime list. The more anime
+                        you watch, the more tailored your search results become!
+                    </p>
+                </div>
+            </div>
+            <div
+                class="col-sm-12 col-md-10 offset-md-1 col-lg-7 offset-lg-0 col-xl-6"
+            >
+                <img src="/static/images/personalize-1.jpg" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container my-5 text-center">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Search Anime Series</h4>
+            <p>
+                Find an anime series, explore its characters, and see who voiced
+                them while instantly seeing the most popular characters that
+                each VA has voiced.
+            </p>
+            <a href="/series/search" class="btn btn-primary">Search Now</a>
+        </div>
+        <div class="col-sm-6">
+            <h4>Search Voice Actors</h4>
+            <p>
+                Investigate voice actors and discover their iconic roles.
+                Multiple sort options and AniList integration available.
+            </p>
+            <a href="/va/search" class="btn btn-primary">Search Now</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

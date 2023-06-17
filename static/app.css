@@ -25,12 +25,47 @@ footer {
   color: #a09f9f;
 }
 
-@media (min-width: 1200px) and (max-width: 1399px) {
-  body.va-details .col-xl-2 {
-    flex: 0 0 auto;
-    width: 20%;
+body.home .hero.spike {
+  z-index: 1;
+  position: relative;
+}
+@media (min-width: 768px) {
+  body.home .hero.spike {
+    padding-top: 6rem !important;
+    padding-bottom: 6rem !important;
   }
 }
+body.home .hero.spike .hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(/static/images/bg-spike-transparent-2k.png);
+  opacity: 0.3;
+  background-size: cover;
+  z-index: -1;
+  background-position: center center;
+}
+body.home .personalize {
+  background-color: #f6f4f7;
+  position: relative;
+  z-index: 1;
+  text-shadow: 1px 1px 0 #fff;
+}
+body.home .personalize .fill-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(/static/images/bg-digimon.jpg);
+  opacity: 0.15;
+  background-size: cover;
+  z-index: -1;
+  background-position: center center;
+}
+
 body.va-search a.card-staff {
   color: rgb(33, 37, 41);
   text-decoration: none;
@@ -126,6 +161,12 @@ body.va-details .roles .card-role .userlist .badge {
 }
 body.va-details .roles .card-role .userlist .bg-purple {
   background-color: var(--bs-purple);
+}
+@media (min-width: 1200px) and (max-width: 1399px) {
+  body.va-details .col-xl-2 {
+    flex: 0 0 auto;
+    width: 20%;
+  }
 }
 
 body.series-search .series .card-series .cover {
