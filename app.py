@@ -309,20 +309,22 @@ def va_search():
     """Search for a voice actor"""
     query = request.form.get('va-search')
     print('QUERY:', query)
+    search_made = False
 
     if not query:
         # Display the search page without making a GraphQL query
-        return render_template('va-search.html')
+        return render_template('va-search.html', search_made=search_made)
 
     # Send the search query to the AniList API
     response_data = search_voice_actors(query, app)
     #print('RESPONSE DATA:', response_data)
     staff = response_data['data']['va']
     status_code = response_data['data']['status_code']
+    search_made = True
 
     if status_code != 200:
         flash(f'An error occurred when contacting the AniList API. (Status code: {status_code})')
-        return render_template('va-search.html')
+        return render_template('va-search.html', search_made=search_made)
 
     # Filter the staff
     filtered_staff = []
@@ -336,7 +338,7 @@ def va_search():
 
     #print('FILTERED STAFF:', filtered_staff)
     # Send the results to the search results page
-    return render_template('va-search.html', staff=filtered_staff, query=query)
+    return render_template('va-search.html', staff=filtered_staff, query=query, search_made=search_made)
 
 
 @app.route('/va/<int:va_id>', methods=['GET', 'POST'])
@@ -428,14 +430,16 @@ def series_search():
     
     query = request.form.get('series-search')
     print('QUERY:', query)
+    search_made = False
 
     if not query:
         # Display the search page without making a GraphQL query
-        return render_template('series-search.html')
+        return render_template('series-search.html', search_made=search_made)
 
     # Send the GraphQL query to the AniList API
     response = search_anime_series(query, app)
     data = response["data"]
+    search_made = True
 
     app.logger.debug(f'*** SERIES SEARCH ROUTE. STATUS CODE: {data["status_code"]} ***')
 
@@ -443,12 +447,11 @@ def series_search():
     if data['status_code'] == 200:
         app.logger.debug('*** 200 CODE, RESPONSE IS GOOD ***')
         series = data['series']
-        return render_template('series-search.html', series=series, query=query)
     else:
         app.logger.debug(f'*** Request failed with status code: {data["status_code"]} ***')
+        series = None
 
-
-    return render_template('series-search.html')
+    return render_template('series-search.html', series=series, query=query, search_made=search_made)
 
 @app.route('/series/<int:series_id>', methods=['GET', 'POST'])
 def series_details(series_id):

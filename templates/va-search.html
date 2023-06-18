@@ -92,6 +92,13 @@ endblock %} {% block content %}
         </div>
         {% endfor %}
     </div>
+    {% elif search_made %}
+    <div class="row mt-4">
+        <div class="col text-center">
+            <h3>No Voice Actor Results Found</h3>
+            <p>Please change your search term and try again!</p>
+        </div>
+    </div>
     {% else %}
     <div class="row mt-4">
         <div class="col text-center">
