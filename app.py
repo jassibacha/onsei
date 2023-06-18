@@ -29,6 +29,10 @@ def inject_is_prod():
     # This variable will be accessible in all templates, allowing us to conditionally add or remove things based on the environment.
     return dict(is_prod=app.config['ENV'] == 'production')
 
+@app.context_processor
+def inject_current_year():
+    return {'current_year': datetime.now().year}
+
 
 # Temp notes about render deploy attempts
 # 1. I tried making a Procfile  REMOVED
