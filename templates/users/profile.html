@@ -2,9 +2,101 @@
 %} {% block body_class %}profile{% endblock %} {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12 mb-2">
             <h1>Your Profile</h1>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-8 col-xl-4 offset-xl-2 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-5 col-lg-4">
+                            <h6 class="mb-0">Username</h6>
+                        </div>
+                        <div class="col-sm-7 col-lg-8 text-secondary">
+                            {{user.username}}
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-5 col-lg-4">
+                            <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-7 col-lg-8 text-secondary">
+                            {{user.email}}
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-5 col-lg-4">
+                            <h6 class="mb-0">AniList Username</h6>
+                        </div>
+                        <div class="col-sm-7 col-lg-8 text-secondary">
+                            {{user.anilist_username}} {% if
+                            user.anilist_profile_accessible %}
+                            <i
+                                class="fas fa-check-circle"
+                                style="color: #198754"
+                            ></i>
+                            {% else %}
+                            <i
+                                class="fas fa-times-circle"
+                                style="color: rgb(220, 53, 69)"
+                            ></i>
+                            <span class="text-danger"
+                                >Username does not exist or the profile is
+                                private.</span
+                            >
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr />
+                    {% if user.anilist_username and
+                    user.anilist_profile_accessible %}
+                    <div class="row">
+                        <div class="col-sm-5 col-lg-4">
+                            <h6 class="mb-0">List Updated</h6>
+                        </div>
+                        <div class="col-sm-7 col-lg-8 text-secondary">
+                            {{ user.anime_list_updated_at | time_since }}
+                            <a
+                                href="/refresh-list"
+                                class="btn btn-outline-primary btn-sm ml-2"
+                                >Refresh List</a
+                            >
+                        </div>
+                    </div>
+                    <hr />
+                    {% endif %} {% if g.user.id == user.id %}
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="d-flex">
+                                <a
+                                    href="/profile/edit"
+                                    class="btn btn-outline-secondary"
+                                    >Edit Profile</a
+                                >
+                                <div class="ms-3">
+                                    <form
+                                        method="POST"
+                                        action="/profile/delete"
+                                        class="d-"
+                                    >
+                                        <button
+                                            class="btn btn-outline-danger ml-2"
+                                        >
+                                            Delete Account
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {#
             <p><strong>Username:</strong> {{user.username}}</p>
             <p><strong>Email:</strong> {{user.email}}</p>
             <p>
@@ -33,19 +125,40 @@
                 >
             </p>
             {% endif %} {% if g.user.id == user.id %}
-            <a href="/profile/edit" class="btn btn-outline-secondary"
-                >Edit Profile</a
-            >
-            <form method="POST" action="/profile/delete" class="form-inline">
-                <button class="btn btn-outline-danger ml-2">
-                    Delete Account
-                </button>
-            </form>
-            {% endif %}
+            <div class="d-flex">
+                <a href="/profile/edit" class="btn btn-outline-secondary"
+                    >Edit Profile</a
+                >
+                <div class="ms-3">
+                    <form method="POST" action="/profile/delete" class="d-">
+                        <button class="btn btn-outline-danger ml-2">
+                            Delete Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %} #}
             <!-- Temporary section to display the full output string -->
+            {#
             <div>
                 Debug (user.anime_list):
                 <pre>{{ user.anime_list }}</pre>
+            </div>
+            #}
+        </div>
+        <div class="col-sm-12 col-md-4 col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Connect Your AniList Profile</h5>
+                    <p class="card-text">
+                        To connect your AniList profile and have your list data
+                        appear on the VA details pages, simply edit your profile
+                        and add your username in the appropriate field.<br />
+                        <br />
+                        Note: Your AniList profile must be public so we can pull
+                        your completed & current list in via their API.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
