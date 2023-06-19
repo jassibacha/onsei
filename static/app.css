@@ -47,6 +47,9 @@ body.home .hero.spike .hero-bg {
   z-index: -1;
   background-position: center center;
 }
+body.home .hero.spike img.anilist-logo {
+  width: 140px;
+}
 body.home .personalize {
   background-color: #f6f4f7;
   position: relative;
