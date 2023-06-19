@@ -51,36 +51,31 @@ content_class %}mb-5{% endblock %} {% block content %}
         {% for s in series %}
         <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
             <a href="/series/{{ s.id }}" class="card card-series flex-row mb-3">
-                {#
-                <div class="card card-series flex-row mb-3">
-                    #}
+                <div class="series-img-wrap card-img-left card-img-poster">
                     <img
-                        class="lozad card-img-left card-img-poster"
+                        class="lozad"
                         data-src="{{ s.coverImage.medium }}"
                         alt="{{ s.title.english or s.title.romaji }} Poster"
                     />
-                    <div class="card-body">
-                        <h5 class="card-title h4-sm mb-2">
-                            {{ s.title.english or s.title.romaji }}
-                        </h5>
-                        <span class="badge season text-bg-secondary">
-                            {% if s.season %}{{ s.season }}{% endif %} {% if
-                            s.seasonYear %}{{ s.seasonYear }}{% endif %}
-                        </span>
-                        {#
-                        <div class="season mb-2">
-                            {% if s.season %}{{ s.season }}{% endif %} {% if
-                            s.seasonYear %}{{ s.seasonYear }}{% endif %}
-                        </div>
-                        #} {#
-                        <a href="/series/{{ s.id }}" class="btn btn-primary">
-                            View Series
-                        </a>
-                        #}
-                    </div>
-                    {#
                 </div>
+                {#
+                <img
+                    class="lozad card-img-left card-img-poster"
+                    data-src="{{ s.coverImage.medium }}"
+                    alt="{{ s.title.english or s.title.romaji }} Poster"
+                />
                 #}
+                <div class="card-body d-flex align-items-center">
+                    <h5 class="card-title h4-sm mb-2">
+                        {{ s.title.english or s.title.romaji }}
+                    </h5>
+                    {% if s.season or s.seasonYear %}
+                    <span class="badge season text-bg-secondary">
+                        {% if s.season %}{{ s.season }}{% endif %} {% if
+                        s.seasonYear %}{{ s.seasonYear }}{% endif %}
+                    </span>
+                    {% endif %}
+                </div>
             </a>
         </div>
         {% endfor %}

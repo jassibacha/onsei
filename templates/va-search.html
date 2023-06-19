@@ -51,13 +51,23 @@ endblock %} {% block content %}
         {% for va in staff %}
         <div class="col-sm-12 col-md-6 col-xl-4 col-xxl-4">
             <a href="/va/{{ va.id }}" class="card card-staff flex-row mb-3">
+                <div class="char-img-wrap card-img-left card-img-poster">
+                    <img
+                        class="lozad"
+                        data-src="{{ va.image.medium }}"
+                        alt="{{ va.name.full }} Photo"
+                    />
+                </div>
+
+                {#
                 <img
                     class="lozad card-img-left card-img-poster"
                     data-src="{{ va.image.medium }}"
                     alt="{{ va.name.full }} Photo"
                 />
+                #}
                 <div class="card-body">
-                    <h5 class="card-title mb-1">{{ va.name.full }}</h5>
+                    <h5 class="card-title mb-2">{{ va.name.full }}</h5>
                     <h6 class="mb-1">Popular Characters:</h6>
                     <div class="pop-chars d-flex flex-row">
                         {% for character in va.characters.nodes %} {#

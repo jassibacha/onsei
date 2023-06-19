@@ -32,10 +32,12 @@ content %}
                 </div>
 
                 <p>
+                    {% if output.series.season or output.series.seasonYear %}
                     Season: {{output.series.season}}
                     {{output.series.seasonYear}}<br />
-                    Genre: {% for genre in output.series.genres %} {{ genre }}
-                    {% if not loop.last %}, {% endif %} {% endfor %}<br />
+                    {% endif %} Genre: {% for genre in output.series.genres %}
+                    {{ genre }} {% if not loop.last %}, {% endif %} {% endfor
+                    %}<br />
                     Studio: {{ output.series.studios.edges[0].node.name }}<br />
                 </p>
             </div>
@@ -58,11 +60,11 @@ content %}
     <div class="row characters"></div>
 </div>
 <!-- Temporary section to display the full output string -->
+{#
 <div>
     <pre>{{ output }}</pre>
 </div>
-
-{% endblock %} {% block extra_js %}
+#} {% endblock %} {% block extra_js %}
 <script>
     $(document).ready(function () {
         // Create a global variable for the observer
