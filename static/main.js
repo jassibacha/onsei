@@ -39,9 +39,15 @@ async function getCharacterMedia(vaId) {
 
 // Display character media after we've pulled it all!
 function displayCharacterMedia(charMedia, aniListUsername) {
-    for (let media of charMedia) {
-        let html = createMediaCard(media, aniListUsername);
-        $('.roles').append(html);
+    if (charMedia.length === 0) {
+        // Check if the array is empty
+        // Append message to .characters div
+        $('.roles').append('<p>No voice acting roles found.</p>');
+    } else {
+        for (let media of charMedia) {
+            let html = createMediaCard(media, aniListUsername);
+            $('.roles').append(html);
+        }
     }
 }
 
@@ -192,18 +198,26 @@ async function getSeriesRoles(seriesId) {
 
 // Display character media after we've pulled it all!
 function displaySeriesRoles(seriesRoles) {
-    for (let char of seriesRoles) {
-        let html = createRoleCard(char);
-        $('.characters').append(html);
-    }
+    if (seriesRoles.length === 0) {
+        // Check if the array is empty
+        // Append message to .characters div
+        $('.characters').append(
+            '<p>No character data found for this series.</p>'
+        );
+    } else {
+        for (let char of seriesRoles) {
+            let html = createRoleCard(char);
+            $('.characters').append(html);
+        }
 
-    // Declare these after creation to allow bootstrap tooltips
-    const tooltipTriggerList = document.querySelectorAll(
-        '[data-bs-toggle="tooltip"]'
-    );
-    const tooltipList = [...tooltipTriggerList].map(
-        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-    );
+        // Declare these after creation to allow bootstrap tooltips
+        const tooltipTriggerList = document.querySelectorAll(
+            '[data-bs-toggle="tooltip"]'
+        );
+        const tooltipList = [...tooltipTriggerList].map(
+            (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+        );
+    }
 }
 
 // Function to display the 'Media Card'
