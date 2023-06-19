@@ -216,11 +216,24 @@ body.va-details {
 }
 
 body.series-search {
-    .series {
-        .card-series {
-            .cover {
-                width: 100px !important;
-            }
+    .card-series {
+        position: relative;
+        color: rgb(33, 37, 41);
+        text-decoration: none;
+        &:hover,
+        &:focus {
+            background-color: var(--bs-gray-100);
+        }
+        h5 {
+            color: rgb(33, 37, 41);
+        }
+        .cover {
+            width: 100px !important;
+        }
+        .season {
+            position: absolute;
+            right: -1px;
+            bottom: -1px;
         }
     }
 }

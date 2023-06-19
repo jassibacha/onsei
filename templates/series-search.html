@@ -63,11 +63,16 @@ content_class %}mb-5{% endblock %} {% block content %}
                         <h5 class="card-title h4-sm mb-2">
                             {{ s.title.english or s.title.romaji }}
                         </h5>
+                        <span class="badge season text-bg-secondary">
+                            {% if s.season %}{{ s.season }}{% endif %} {% if
+                            s.seasonYear %}{{ s.seasonYear }}{% endif %}
+                        </span>
+                        {#
                         <div class="season mb-2">
                             {% if s.season %}{{ s.season }}{% endif %} {% if
                             s.seasonYear %}{{ s.seasonYear }}{% endif %}
                         </div>
-                        {#
+                        #} {#
                         <a href="/series/{{ s.id }}" class="btn btn-primary">
                             View Series
                         </a>

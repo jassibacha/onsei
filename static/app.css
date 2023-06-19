@@ -169,8 +169,24 @@ body.va-details .roles .card-role .userlist .bg-purple {
   }
 }
 
-body.series-search .series .card-series .cover {
+body.series-search .card-series {
+  position: relative;
+  color: rgb(33, 37, 41);
+  text-decoration: none;
+}
+body.series-search .card-series:hover, body.series-search .card-series:focus {
+  background-color: var(--bs-gray-100);
+}
+body.series-search .card-series h5 {
+  color: rgb(33, 37, 41);
+}
+body.series-search .card-series .cover {
   width: 100px !important;
+}
+body.series-search .card-series .season {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
 }
 
 body.series-details .hero {
